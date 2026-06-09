@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Controle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- ── Sidebar ───────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Central</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-tab="escalas">
+          <span class="nav-icon">📅</span> Escalas
+        </button>
+        <button class="nav-item" data-tab="tarefas">
+          <span class="nav-icon">✅</span> Tarefas
+        </button>
+        <button class="nav-item" data-tab="servos">
+          <span class="nav-icon">👥</span> Servos
+        </button>
+      </nav>
+      <div class="sidebar-status" id="statusDot">
+        <span class="dot dot--ok"></span> Online
+      </div>
+    </aside>
+
+    <!-- ── Conteúdo Principal ────────────────────────────────── -->
+    <main class="main">
+
+      <!-- ── ESCALAS ── -->
+      <section class="tab-panel active" id="tab-escalas">
+        <div class="panel-header">
+          <h1>Escalas de Telão</h1>
+          <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
+        </div>
+        <div class="card-grid" id="lista-escalas">
+          <div class="empty-state">A carregar…</div>
+        </div>
+      </section>
+
+      <!-- ── TAREFAS ── -->
+      <section class="tab-panel" id="tab-tarefas">
+        <div class="panel-header">
+          <h1>Tarefas</h1>
+          <button class="btn btn--primary" onclick="abrirModal('modal-tarefa')">+ Nova Tarefa</button>
+        </div>
+        <div class="task-list" id="lista-tarefas">
+          <div class="empty-state">A carregar…</div>
+        </div>
+      </section>
+
+      <!-- ── SERVOS ── -->
+      <section class="tab-panel" id="tab-servos">
+        <div class="panel-header">
+          <h1>Servos</h1>
+          <button class="btn btn--primary" onclick="abrirModal('modal-servo')">+ Novo Servo</button>
+        </div>
+        <div class="card-grid" id="lista-servos">
+          <div class="empty-state">A carregar…</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ─────────────────── MODAIS ─────────────────────────────── -->
+
+  <!-- Modal Escala -->
+  <div class="modal-overlay" id="modal-escala">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Nova Escala</h2>
+        <button class="modal-close" onclick="fecharModal('modal-escala')">✕</button>
+      </div>
+      <div class="modal-body">
+        <label>Data
+          <input type="date" id="esc-data" />
+        </label>
+        <label>Operador
+          <input type="text" id="esc-operador" placeholder="Nome do operador" />
+        </label>
+        <label>Telefone
+          <input type="tel" id="esc-telefone" placeholder="(51) 9 0000-0000" />
+        </label>
+        <label>Músicas
+          <textarea id="esc-musicas" rows="3" placeholder="Lista de músicas separadas por vírgula"></textarea>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--ghost" onclick="fecharModal('modal-escala')">Cancelar</button>
+        <button class="btn btn--primary" onclick="salvarEscala()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tarefa -->
+  <div class="modal-overlay" id="modal-tarefa">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Nova Tarefa</h2>
+        <button class="modal-close" onclick="fecharModal('modal-tarefa')">✕</button>
+      </div>
+      <div class="modal-body">
+        <label>Descrição
+          <input type="text" id="tar-tarefa" placeholder="Descreva a tarefa" />
+        </label>
+        <label>Prazo
+          <input type="date" id="tar-prazo" />
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--ghost" onclick="fecharModal('modal-tarefa')">Cancelar</button>
+        <button class="btn btn--primary" onclick="salvarTarefa()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Servo -->
+  <div class="modal-overlay" id="modal-servo">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Novo Servo</h2>
+        <button class="modal-close" onclick="fecharModal('modal-servo')">✕</button>
+      </div>
+      <div class="modal-body">
+        <label>Nome
+          <input type="text" id="srv-nome" placeholder="Nome completo" />
+        </label>
+        <label>Telefone
+          <input type="tel" id="srv-telefone" placeholder="(51) 9 0000-0000" />
+        </label>
+        <label>Função
+          <input type="text" id="srv-funcao" placeholder="Ex: Operador, Músico…" />
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--ghost" onclick="fecharModal('modal-servo')">Cancelar</button>
+        <button class="btn btn--primary" onclick="salvarServo()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
