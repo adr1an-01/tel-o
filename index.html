@@ -13,35 +13,59 @@
 
   <div class="layout">
 
-    <!-- ── Sidebar ───────────────────────────────────────────── -->
+    <!-- ── Sidebar ── -->
     <aside class="sidebar">
       <div class="logo">
         <span class="logo-icon">✦</span>
         <span class="logo-text">Central</span>
       </div>
       <nav class="nav">
-        <button class="nav-item active" data-tab="escalas">
-          <span class="nav-icon">📅</span> Escalas
+        <button class="nav-item active" data-tab="calendario">
+          <span class="nav-icon">📅</span><span class="nav-label">Calendário</span>
+        </button>
+        <button class="nav-item" data-tab="escalas">
+          <span class="nav-icon">🎛️</span><span class="nav-label">Escalas</span>
         </button>
         <button class="nav-item" data-tab="tarefas">
-          <span class="nav-icon">✅</span> Tarefas
+          <span class="nav-icon">✅</span><span class="nav-label">Tarefas</span>
         </button>
         <button class="nav-item" data-tab="servos">
-          <span class="nav-icon">👥</span> Servos
+          <span class="nav-icon">👥</span><span class="nav-label">Servos</span>
         </button>
       </nav>
       <div class="sidebar-status" id="statusDot">
-        <span class="dot dot--ok"></span> Online
+        <span class="dot dot--ok"></span><span class="nav-label"> Online</span>
       </div>
     </aside>
 
-    <!-- ── Conteúdo Principal ────────────────────────────────── -->
+    <!-- ── Main ── -->
     <main class="main">
 
-      <!-- ── ESCALAS ── -->
-      <section class="tab-panel active" id="tab-escalas">
+      <!-- CALENDÁRIO -->
+      <section class="tab-panel active" id="tab-calendario">
         <div class="panel-header">
-          <h1>Escalas de Telão</h1>
+          <div class="cal-nav">
+            <button class="btn-cal-nav" id="calPrev">‹</button>
+            <h1 id="calTitulo">Junho 2026</h1>
+            <button class="btn-cal-nav" id="calNext">›</button>
+          </div>
+          <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <!-- Detalhe do dia -->
+        <div class="day-detail" id="dayDetail" style="display:none">
+          <div class="day-detail-header">
+            <span id="dayDetailTitle"></span>
+            <button onclick="fecharDetalhe()">✕</button>
+          </div>
+          <div id="dayDetailBody"></div>
+        </div>
+      </section>
+
+      <!-- ESCALAS -->
+      <section class="tab-panel" id="tab-escalas">
+        <div class="panel-header">
+          <h1>Escalas</h1>
           <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
         </div>
         <div class="card-grid" id="lista-escalas">
@@ -49,7 +73,7 @@
         </div>
       </section>
 
-      <!-- ── TAREFAS ── -->
+      <!-- TAREFAS -->
       <section class="tab-panel" id="tab-tarefas">
         <div class="panel-header">
           <h1>Tarefas</h1>
@@ -60,7 +84,7 @@
         </div>
       </section>
 
-      <!-- ── SERVOS ── -->
+      <!-- SERVOS -->
       <section class="tab-panel" id="tab-servos">
         <div class="panel-header">
           <h1>Servos</h1>
@@ -74,7 +98,7 @@
     </main>
   </div>
 
-  <!-- ─────────────────── MODAIS ─────────────────────────────── -->
+  <!-- ── MODAIS ── -->
 
   <!-- Modal Escala -->
   <div class="modal-overlay" id="modal-escala">
@@ -88,13 +112,18 @@
           <input type="date" id="esc-data" />
         </label>
         <label>Operador
-          <input type="text" id="esc-operador" placeholder="Nome do operador" />
+          <select id="esc-operador">
+            <option value="">Selecionar servo…</option>
+          </select>
         </label>
         <label>Telefone
-          <input type="tel" id="esc-telefone" placeholder="(51) 9 0000-0000" />
+          <input type="tel" id="esc-telefone" placeholder="Preenchido automaticamente" readonly />
         </label>
         <label>Músicas
-          <textarea id="esc-musicas" rows="3" placeholder="Lista de músicas separadas por vírgula"></textarea>
+          <textarea id="esc-musicas" rows="2" placeholder="Lista de músicas separadas por vírgula"></textarea>
+        </label>
+        <label>Observação
+          <textarea id="esc-obs" rows="2" placeholder="Algo importante a lembrar…"></textarea>
         </label>
       </div>
       <div class="modal-footer">
@@ -153,6 +182,14 @@
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
+
+  <!-- Bottom nav mobile -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" data-tab="calendario">📅<span>Calendário</span></button>
+    <button class="bottom-nav-item" data-tab="escalas">🎛️<span>Escalas</span></button>
+    <button class="bottom-nav-item" data-tab="tarefas">✅<span>Tarefas</span></button>
+    <button class="bottom-nav-item" data-tab="servos">👥<span>Servos</span></button>
+  </nav>
 
   <script src="app.js"></script>
 </body>
