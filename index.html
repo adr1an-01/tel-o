@@ -6,191 +6,268 @@
   <title>Central de Controle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="layout">
-
-    <!-- ── Sidebar ── -->
-    <aside class="sidebar">
-      <div class="logo">
-        <span class="logo-icon">✦</span>
-        <span class="logo-text">Central</span>
-      </div>
-      <nav class="nav">
-        <button class="nav-item active" data-tab="calendario">
-          <span class="nav-icon">📅</span><span class="nav-label">Calendário</span>
-        </button>
-        <button class="nav-item" data-tab="escalas">
-          <span class="nav-icon">🎛️</span><span class="nav-label">Escalas</span>
-        </button>
-        <button class="nav-item" data-tab="tarefas">
-          <span class="nav-icon">✅</span><span class="nav-label">Tarefas</span>
-        </button>
-        <button class="nav-item" data-tab="servos">
-          <span class="nav-icon">👥</span><span class="nav-label">Servos</span>
-        </button>
-      </nav>
-      <div class="sidebar-status" id="statusDot">
-        <span class="dot dot--ok"></span><span class="nav-label"> Online</span>
-      </div>
-    </aside>
-
-    <!-- ── Main ── -->
-    <main class="main">
-
-      <!-- CALENDÁRIO -->
-      <section class="tab-panel active" id="tab-calendario">
-        <div class="panel-header">
-          <div class="cal-nav">
-            <button class="btn-cal-nav" id="calPrev">‹</button>
-            <h1 id="calTitulo">Junho 2026</h1>
-            <button class="btn-cal-nav" id="calNext">›</button>
-          </div>
-          <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
-        </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-        <!-- Detalhe do dia -->
-        <div class="day-detail" id="dayDetail" style="display:none">
-          <div class="day-detail-header">
-            <span id="dayDetailTitle"></span>
-            <button onclick="fecharDetalhe()">✕</button>
-          </div>
-          <div id="dayDetailBody"></div>
-        </div>
-      </section>
-
-      <!-- ESCALAS -->
-      <section class="tab-panel" id="tab-escalas">
-        <div class="panel-header">
-          <h1>Escalas</h1>
-          <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
-        </div>
-        <div class="card-grid" id="lista-escalas">
-          <div class="empty-state">A carregar…</div>
-        </div>
-      </section>
-
-      <!-- TAREFAS -->
-      <section class="tab-panel" id="tab-tarefas">
-        <div class="panel-header">
-          <h1>Tarefas</h1>
-          <button class="btn btn--primary" onclick="abrirModal('modal-tarefa')">+ Nova Tarefa</button>
-        </div>
-        <div class="task-list" id="lista-tarefas">
-          <div class="empty-state">A carregar…</div>
-        </div>
-      </section>
-
-      <!-- SERVOS -->
-      <section class="tab-panel" id="tab-servos">
-        <div class="panel-header">
-          <h1>Servos</h1>
-          <button class="btn btn--primary" onclick="abrirModal('modal-servo')">+ Novo Servo</button>
-        </div>
-        <div class="card-grid" id="lista-servos">
-          <div class="empty-state">A carregar…</div>
-        </div>
-      </section>
-
-    </main>
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><span class="login-logo-icon">✦</span><span>Central de Controle</span></div>
+    <p class="login-sub">Acesso restrito à equipa</p>
+    <div class="login-form">
+      <label>Usuário<input type="text" id="loginUser" placeholder="admin" autocomplete="username" /></label>
+      <label>Senha<input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" /></label>
+      <div class="login-error" id="loginError"></div>
+      <button class="btn btn--primary btn--full" onclick="fazerLogin()">Entrar</button>
+    </div>
   </div>
+</div>
 
-  <!-- ── MODAIS ── -->
+<!-- APP -->
+<div class="layout" id="appLayout" style="display:none">
 
-  <!-- Modal Escala -->
-  <div class="modal-overlay" id="modal-escala">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Nova Escala</h2>
-        <button class="modal-close" onclick="fecharModal('modal-escala')">✕</button>
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-icon">✦</span><span class="logo-text">Central</span></div>
+    <nav class="nav">
+      <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span></button>
+      <button class="nav-item" data-tab="calendario"><span class="nav-icon">📅</span><span class="nav-label">Calendário</span></button>
+      <button class="nav-item" data-tab="escalas"><span class="nav-icon">🎛️</span><span class="nav-label">Escalas</span></button>
+      <button class="nav-item" data-tab="tarefas"><span class="nav-icon">✅</span><span class="nav-label">Tarefas</span></button>
+      <button class="nav-item" data-tab="servos"><span class="nav-icon">👥</span><span class="nav-label">Servos</span></button>
+      <button class="nav-item" data-tab="biblia"><span class="nav-icon">📖</span><span class="nav-label">Bíblia</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" id="sidebarUser"></div>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section class="tab-panel active" id="tab-dashboard">
+      <div class="panel-header"><h1>Dashboard</h1></div>
+      <div class="dash-cards" id="dashCards"></div>
+      <div class="dash-bottom">
+        <div><h2 class="section-title">Próximas Escalas</h2><div id="dashProximas"></div></div>
+        <div><h2 class="section-title">Tarefas Pendentes</h2><div id="dashTarefas"></div></div>
       </div>
-      <div class="modal-body">
-        <label>Data
-          <input type="date" id="esc-data" />
-        </label>
-        <label>Operador
-          <select id="esc-operador">
-            <option value="">Selecionar servo…</option>
+    </section>
+
+    <!-- CALENDÁRIO -->
+    <section class="tab-panel" id="tab-calendario">
+      <div class="panel-header">
+        <div class="cal-nav">
+          <button class="btn-cal-nav" id="calPrev">‹</button>
+          <h1 id="calTitulo"></h1>
+          <button class="btn-cal-nav" id="calNext">›</button>
+        </div>
+        <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="day-detail" id="dayDetail" style="display:none">
+        <div class="day-detail-header"><span id="dayDetailTitle"></span><button onclick="fecharDetalhe()">✕</button></div>
+        <div id="dayDetailBody"></div>
+      </div>
+    </section>
+
+    <!-- ESCALAS -->
+    <section class="tab-panel" id="tab-escalas">
+      <div class="panel-header"><h1>Escalas</h1><button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button></div>
+      <div class="card-grid" id="lista-escalas"></div>
+    </section>
+
+    <!-- TAREFAS -->
+    <section class="tab-panel" id="tab-tarefas">
+      <div class="panel-header"><h1>Tarefas</h1><button class="btn btn--primary" onclick="abrirModal('modal-tarefa')">+ Nova Tarefa</button></div>
+      <div class="task-filters">
+        <button class="filter-btn active" data-filter="todos">Todas</button>
+        <button class="filter-btn" data-filter="pendente">Pendentes</button>
+        <button class="filter-btn" data-filter="em_andamento">Em andamento</button>
+        <button class="filter-btn" data-filter="concluida">Concluídas</button>
+      </div>
+      <div class="task-list" id="lista-tarefas"></div>
+    </section>
+
+    <!-- SERVOS -->
+    <section class="tab-panel" id="tab-servos">
+      <div class="panel-header"><h1>Servos</h1><button class="btn btn--primary" onclick="abrirModal('modal-servo')">+ Novo Servo</button></div>
+      <div class="servos-filtros"><input type="text" id="buscarServo" placeholder="Buscar servo…" oninput="filtrarServos()" /></div>
+      <div class="card-grid" id="lista-servos"></div>
+    </section>
+
+    <!-- BÍBLIA -->
+    <section class="tab-panel" id="tab-biblia">
+      <div class="panel-header"><h1>Bíblia</h1></div>
+
+      <!-- Sub-tabs -->
+      <div class="bible-tabs">
+        <button class="bible-tab active" data-btab="busca">🔍 Busca</button>
+        <button class="bible-tab" data-btab="favoritos">⭐ Favoritos</button>
+        <button class="bible-tab" data-btab="estudos">📝 Estudos</button>
+      </div>
+
+      <!-- BUSCA -->
+      <div class="bible-panel active" id="btab-busca">
+        <div class="bible-search-box">
+          <div class="bible-search-row">
+            <input type="text" id="bibliaRef" placeholder="Ex: João 3:16 ou João 3:1-10" />
+            <button class="btn btn--primary" onclick="buscarPorReferencia()">Buscar</button>
+          </div>
+          <div class="bible-search-row">
+            <input type="text" id="bibliaPalavra" placeholder="Buscar por palavra-chave…" />
+            <button class="btn btn--ghost" onclick="buscarPorPalavra()">Buscar</button>
+          </div>
+        </div>
+        <div id="bibliaResultado"></div>
+      </div>
+
+      <!-- FAVORITOS -->
+      <div class="bible-panel" id="btab-favoritos">
+        <div class="bible-fav-header">
+          <select id="favCategoria" onchange="carregarFavoritos()">
+            <option value="todas">Todas as categorias</option>
           </select>
-        </label>
-        <label>Telefone
-          <input type="tel" id="esc-telefone" placeholder="Preenchido automaticamente" readonly />
-        </label>
-        <label>Músicas
-          <textarea id="esc-musicas" rows="2" placeholder="Lista de músicas separadas por vírgula"></textarea>
-        </label>
-        <label>Observação
-          <textarea id="esc-obs" rows="2" placeholder="Algo importante a lembrar…"></textarea>
-        </label>
+          <button class="btn btn--primary" onclick="abrirModal('modal-categoria')">+ Categoria</button>
+        </div>
+        <div id="listaFavoritos"></div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn--ghost" onclick="fecharModal('modal-escala')">Cancelar</button>
-        <button class="btn btn--primary" onclick="salvarEscala()">Salvar</button>
+
+      <!-- ESTUDOS -->
+      <div class="bible-panel" id="btab-estudos">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+          <button class="btn btn--primary" onclick="abrirModal('modal-estudo')">+ Novo Estudo</button>
+        </div>
+        <div id="listaEstudos"></div>
       </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAIS -->
+
+<!-- Modal Escala -->
+<div class="modal-overlay" id="modal-escala">
+  <div class="modal">
+    <div class="modal-header"><h2>Nova Escala</h2><button class="modal-close" onclick="fecharModal('modal-escala')">✕</button></div>
+    <div class="modal-body">
+      <label>Data<input type="date" id="esc-data" /></label>
+      <label>Operador<select id="esc-operador"><option value="">Selecionar servo…</option></select></label>
+      <label>Telefone<input type="tel" id="esc-telefone" readonly /></label>
+      <label>Músicas<textarea id="esc-musicas" rows="2" placeholder="Lista de músicas…"></textarea></label>
+      <label>Observação<textarea id="esc-obs" rows="2" placeholder="Algo importante a lembrar…"></textarea></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-escala')">Cancelar</button>
+      <button class="btn btn--primary" onclick="salvarEscala()">Salvar</button>
     </div>
   </div>
+</div>
 
-  <!-- Modal Tarefa -->
-  <div class="modal-overlay" id="modal-tarefa">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Nova Tarefa</h2>
-        <button class="modal-close" onclick="fecharModal('modal-tarefa')">✕</button>
-      </div>
-      <div class="modal-body">
-        <label>Descrição
-          <input type="text" id="tar-tarefa" placeholder="Descreva a tarefa" />
-        </label>
-        <label>Prazo
-          <input type="date" id="tar-prazo" />
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn--ghost" onclick="fecharModal('modal-tarefa')">Cancelar</button>
-        <button class="btn btn--primary" onclick="salvarTarefa()">Salvar</button>
-      </div>
+<!-- Modal Tarefa -->
+<div class="modal-overlay" id="modal-tarefa">
+  <div class="modal">
+    <div class="modal-header"><h2>Nova Tarefa</h2><button class="modal-close" onclick="fecharModal('modal-tarefa')">✕</button></div>
+    <div class="modal-body">
+      <label>Descrição<input type="text" id="tar-tarefa" placeholder="Descreva a tarefa" /></label>
+      <label>Prazo<input type="date" id="tar-prazo" /></label>
+      <label>Status
+        <select id="tar-status">
+          <option value="pendente">Pendente</option>
+          <option value="em_andamento">Em andamento</option>
+          <option value="concluida">Concluída</option>
+        </select>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-tarefa')">Cancelar</button>
+      <button class="btn btn--primary" onclick="salvarTarefa()">Salvar</button>
     </div>
   </div>
+</div>
 
-  <!-- Modal Servo -->
-  <div class="modal-overlay" id="modal-servo">
-    <div class="modal">
-      <div class="modal-header">
-        <h2>Novo Servo</h2>
-        <button class="modal-close" onclick="fecharModal('modal-servo')">✕</button>
-      </div>
-      <div class="modal-body">
-        <label>Nome
-          <input type="text" id="srv-nome" placeholder="Nome completo" />
-        </label>
-        <label>Telefone
-          <input type="tel" id="srv-telefone" placeholder="(51) 9 0000-0000" />
-        </label>
-        <label>Função
-          <input type="text" id="srv-funcao" placeholder="Ex: Operador, Músico…" />
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn--ghost" onclick="fecharModal('modal-servo')">Cancelar</button>
-        <button class="btn btn--primary" onclick="salvarServo()">Salvar</button>
-      </div>
+<!-- Modal Servo -->
+<div class="modal-overlay" id="modal-servo">
+  <div class="modal">
+    <div class="modal-header"><h2>Novo Servo</h2><button class="modal-close" onclick="fecharModal('modal-servo')">✕</button></div>
+    <div class="modal-body">
+      <label>Nome<input type="text" id="srv-nome" placeholder="Nome completo" /></label>
+      <label>Telefone<input type="tel" id="srv-telefone" placeholder="(51) 9 0000-0000" /></label>
+      <label>Função<input type="text" id="srv-funcao" placeholder="Ex: Operador, Músico, Som…" /></label>
+      <label>E-mail<input type="email" id="srv-email" placeholder="email@exemplo.com" /></label>
+      <label>Aniversário<input type="date" id="srv-aniversario" /></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-servo')">Cancelar</button>
+      <button class="btn btn--primary" onclick="salvarServo()">Salvar</button>
     </div>
   </div>
+</div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
+<!-- Modal Favorito (anotação) -->
+<div class="modal-overlay" id="modal-anotacao">
+  <div class="modal">
+    <div class="modal-header"><h2>Anotação</h2><button class="modal-close" onclick="fecharModal('modal-anotacao')">✕</button></div>
+    <div class="modal-body">
+      <div id="anotacaoVersiculo" class="bible-verse-preview"></div>
+      <label>Categoria
+        <select id="anotacaoCategoria">
+          <option value="geral">Geral</option>
+          <option value="pregacao">Pregação</option>
+          <option value="estudo">Estudo</option>
+          <option value="devocional">Devocional</option>
+          <option value="promessa">Promessa</option>
+        </select>
+      </label>
+      <label>Anotação<textarea id="anotacaoTexto" rows="4" placeholder="Escreve a tua anotação…"></textarea></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-anotacao')">Cancelar</button>
+      <button class="btn btn--primary" onclick="confirmarFavorito()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-  <!-- Bottom nav mobile -->
-  <nav class="bottom-nav">
-    <button class="bottom-nav-item active" data-tab="calendario">📅<span>Calendário</span></button>
-    <button class="bottom-nav-item" data-tab="escalas">🎛️<span>Escalas</span></button>
-    <button class="bottom-nav-item" data-tab="tarefas">✅<span>Tarefas</span></button>
-    <button class="bottom-nav-item" data-tab="servos">👥<span>Servos</span></button>
-  </nav>
+<!-- Modal Estudo -->
+<div class="modal-overlay" id="modal-estudo">
+  <div class="modal modal--wide">
+    <div class="modal-header"><h2 id="modalEstudoTitulo">Novo Estudo</h2><button class="modal-close" onclick="fecharModal('modal-estudo')">✕</button></div>
+    <div class="modal-body">
+      <label>Título<input type="text" id="est-titulo" placeholder="Título do estudo ou pregação" /></label>
+      <label>Versículo base<input type="text" id="est-versiculo" placeholder="Ex: João 3:16" /></label>
+      <label>Texto base<textarea id="est-texto-base" rows="2" placeholder="Cole o versículo aqui…"></textarea></label>
+      <label>Categoria
+        <select id="est-categoria">
+          <option value="geral">Geral</option>
+          <option value="pregacao">Pregação</option>
+          <option value="estudo">Estudo Bíblico</option>
+          <option value="devocional">Devocional</option>
+          <option value="celula">Célula</option>
+        </select>
+      </label>
+      <label>Conteúdo / Anotações<textarea id="est-conteudo" rows="8" placeholder="Escreve o conteúdo, pontos principais, observações…"></textarea></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-estudo')">Cancelar</button>
+      <button class="btn btn--primary" id="btnSalvarEstudo" onclick="salvarEstudo()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-  <script src="app.js"></script>
+<div class="toast" id="toast"></div>
+
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+  <button class="bottom-nav-item active" data-tab="dashboard">⚡<span>Home</span></button>
+  <button class="bottom-nav-item" data-tab="calendario">📅<span>Agenda</span></button>
+  <button class="bottom-nav-item" data-tab="tarefas">✅<span>Tarefas</span></button>
+  <button class="bottom-nav-item" data-tab="biblia">📖<span>Bíblia</span></button>
+  <button class="bottom-nav-item" data-tab="servos">👥<span>Servos</span></button>
+</nav>
+
+<script src="app.js"></script>
 </body>
 </html>
