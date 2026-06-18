@@ -473,6 +473,21 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   .cal-day.has-escala::after { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin: 2px auto 0; }
 }
 
+/* ══ ANTI-ZOOM (iOS Safari) ═══════════════════════════════════════════════════ */
+/* iOS Safari aplica zoom automático quando font-size < 16px em campos de entrada.
+   Esta regra garante que todos os inputs/selects/textareas tenham no mínimo 16px
+   apenas em dispositivos de toque, sem alterar a aparência visual. */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Remove zoom por duplo toque em todos os elementos interativos */
+button, a, input, select, textarea, label {
+  touch-action: manipulation;
+}
+
 /* ══ BÍBLIA ═══════════════════════════════════════════════════════════════════ */
 .bible-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
 .bible-tab {
