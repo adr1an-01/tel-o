@@ -1,45 +1,64 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ══ TOKENS ═══════════════════════════════════════════════════════════════ */
 :root {
-  /* Backgrounds */
-  --bg:         #080a10;
-  --surface:    #0e1018;
-  --surface-2:  #161921;
-  --surface-3:  #1e2130;
+  --accent-h: 231;
+  --accent-s: 100%;
+  --accent-l: 68%;
+  --accent:     hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --accent-dim: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.12);
+  --accent-glow:hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.22);
+  --accent-text: #fff;
 
-  /* Borders */
-  --border:     #1f2335;
-  --border-2:   #2a2f47;
+  /* dark mode default */
+  --bg:        #080a10;
+  --surface:   #0e1018;
+  --surface-2: #161921;
+  --surface-3: #1e2130;
+  --border:    #1f2335;
+  --border-2:  #2a2f47;
+  --text:      #dde3f5;
+  --text-2:    #6b738f;
+  --text-3:    #3a3f58;
+  --shadow:    0 8px 32px rgba(0,0,0,.55);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,.35);
 
-  /* Accent — índigo elétrico com brilho suave */
-  --accent:     #5b7fff;
-  --accent-dim: rgba(91,127,255,0.10);
-  --accent-glow:rgba(91,127,255,0.20);
-  --accent-2:   #a78bfa;
-
-  /* Semântica */
   --danger:     #f25f5c;
-  --danger-dim: rgba(242,95,92,0.12);
+  --danger-dim: rgba(242,95,92,.12);
   --success:    #2dd4a0;
-  --success-dim:rgba(45,212,160,0.12);
+  --success-dim:rgba(45,212,160,.12);
   --warning:    #f5a623;
-  --warning-dim:rgba(245,166,35,0.12);
-  --info:       #38bdf8;
+  --warning-dim:rgba(245,166,35,.12);
 
-  /* Texto */
-  --text:       #dde3f5;
-  --text-2:     #6b738f;
-  --text-3:     #3a3f58;
-
-  /* Misc */
-  --radius:     14px;
+  --radius:    14px;
   --radius-sm:  9px;
   --radius-xs:  6px;
-  --font:       'Inter', sans-serif;
-  --mono:       'JetBrains Mono', 'Fira Mono', monospace;
-  --shadow:     0 8px 32px rgba(0,0,0,0.55);
-  --shadow-sm:  0 2px 12px rgba(0,0,0,0.35);
+  --font: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
 }
+
+/* ══ LIGHT MODE ═══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --bg:        #f0f2f8;
+  --surface:   #ffffff;
+  --surface-2: #f4f6fc;
+  --surface-3: #e8ecf5;
+  --border:    #dde2ef;
+  --border-2:  #c8d0e4;
+  --text:      #1a1d2e;
+  --text-2:    #5a6380;
+  --text-3:    #8c96b0;
+  --shadow:    0 4px 24px rgba(0,0,0,.10);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.07);
+}
+
+/* ══ ACCENT PALETTES ══════════════════════════════════════════════════════ */
+[data-accent="indigo"]  { --accent-h:231; --accent-s:100%; --accent-l:68%; }
+[data-accent="purple"]  { --accent-h:262; --accent-s:80%;  --accent-l:65%; }
+[data-accent="blue"]    { --accent-h:210; --accent-s:100%; --accent-l:60%; }
+[data-accent="green"]   { --accent-h:155; --accent-s:70%;  --accent-l:48%; }
+[data-accent="orange"]  { --accent-h:28;  --accent-s:100%; --accent-l:58%; }
+[data-accent="rose"]    { --accent-h:345; --accent-s:85%;  --accent-l:62%; }
 
 html, body {
   height: 100%;
@@ -49,421 +68,298 @@ html, body {
   font-size: 14px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  /* prevent zoom on double-tap / input focus on iOS */
+  touch-action: manipulation;
 }
 
 /* ══ SCROLLBAR ════════════════════════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
 
 /* ══ LOGIN ════════════════════════════════════════════════════════════════ */
 .login-screen {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  background:
-    radial-gradient(ellipse 70% 60% at 70% 30%, rgba(91,127,255,0.07) 0%, transparent 65%),
-    var(--bg);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse 70% 60% at 65% 30%, var(--accent-glow), transparent 65%), var(--bg);
   padding: 20px;
 }
 .login-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 44px 40px;
-  width: 100%; max-width: 370px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 22px; padding: 44px 40px; width: 100%; max-width: 370px;
   box-shadow: var(--shadow);
 }
-.login-logo {
-  display: flex; align-items: center; gap: 12px; justify-content: center;
-  font-size: 19px; font-weight: 700; margin-bottom: 6px;
-}
-.login-logo-icon {
-  font-size: 26px; color: var(--accent);
-  filter: drop-shadow(0 0 10px var(--accent-glow));
-}
-.login-sub { text-align: center; color: var(--text-2); font-size: 12.5px; margin-bottom: 30px; letter-spacing: .3px; }
+.login-logo { display: flex; align-items: center; gap: 12px; justify-content: center; font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+.login-logo-icon { font-size: 28px; color: var(--accent); filter: drop-shadow(0 0 10px var(--accent-glow)); }
+.login-sub { text-align: center; color: var(--text-2); font-size: 12.5px; margin-bottom: 30px; }
 .login-form { display: flex; flex-direction: column; gap: 14px; }
-.login-form label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: .3px; text-transform: uppercase; }
+.login-form label { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .4px; }
 .login-form input {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text); font-family: var(--font); font-size: 14px;
-  padding: 11px 14px; outline: none;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: var(--font); font-size: 15px; padding: 12px 14px; outline: none;
   transition: border-color .2s, box-shadow .2s;
+  /* prevent iOS zoom on focus (font-size >= 16px does it) */
 }
-.login-form input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
-}
-.login-error { color: var(--danger); font-size: 12px; min-height: 18px; text-align: center; margin-top: -4px; }
-.btn--full { width: 100%; justify-content: center; padding: 12px; font-size: 14px; }
+.login-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.login-error { color: var(--danger); font-size: 12px; min-height: 18px; text-align: center; }
+.btn--full { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
 
 /* ══ LAYOUT ═══════════════════════════════════════════════════════════════ */
 .layout { display: flex; height: 100vh; overflow: hidden; }
 
 /* ══ SIDEBAR ══════════════════════════════════════════════════════════════ */
 .sidebar {
-  width: 224px; min-width: 224px;
-  background: var(--surface);
+  width: 220px; min-width: 220px; background: var(--surface);
   border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  padding: 22px 12px;
-  gap: 0;
+  display: flex; flex-direction: column; padding: 20px 10px; gap: 0;
 }
-.logo {
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 10px; margin-bottom: 28px;
-}
-.logo-icon {
-  font-size: 18px; color: var(--accent);
-  filter: drop-shadow(0 0 8px var(--accent-glow));
-}
-.logo-text { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+.logo { display: flex; align-items: center; gap: 10px; padding: 0 10px; margin-bottom: 26px; }
+.logo-icon { font-size: 20px; color: var(--accent); filter: drop-shadow(0 0 8px var(--accent-glow)); }
+.logo-text { font-size: 15px; font-weight: 700; }
 .nav { display: flex; flex-direction: column; gap: 1px; flex: 1; }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 9px 10px; border-radius: var(--radius-sm);
-  background: none; border: none;
-  color: var(--text-2); font-family: var(--font);
-  font-size: 13.5px; font-weight: 500;
-  cursor: pointer; text-align: left;
-  transition: background .15s, color .15s;
-  position: relative;
+  background: none; border: none; color: var(--text-2);
+  font-family: var(--font); font-size: 13.5px; font-weight: 500;
+  cursor: pointer; text-align: left; transition: all .15s; position: relative;
 }
 .nav-item:hover { background: var(--surface-2); color: var(--text); }
-.nav-item.active {
-  background: var(--accent-dim);
-  color: var(--accent);
-}
+.nav-item.active { background: var(--accent-dim); color: var(--accent); }
 .nav-item.active::before {
-  content: '';
-  position: absolute; left: -12px; top: 50%;
-  transform: translateY(-50%);
-  width: 3px; height: 22px;
-  background: var(--accent);
-  border-radius: 0 3px 3px 0;
+  content: ''; position: absolute; left: -10px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 20px; background: var(--accent); border-radius: 0 3px 3px 0;
 }
 .nav-icon { font-size: 15px; flex-shrink: 0; }
-.nav-label { line-height: 1; }
-
-.sidebar-bottom {
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-  display: flex; flex-direction: column; gap: 8px;
-}
-.sidebar-user {
-  font-size: 12px; color: var(--text-2);
-  padding: 4px 10px;
-  display: flex; align-items: center; gap: 6px;
-}
+.sidebar-bottom { padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.sidebar-user { font-size: 12px; color: var(--text-2); padding: 4px 10px; }
 .btn-logout {
   background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
   color: var(--text-2); font-family: var(--font); font-size: 12.5px;
-  padding: 7px 12px; cursor: pointer; transition: all .15s; text-align: left;
+  padding: 7px 12px; cursor: pointer; transition: all .15s;
 }
 .btn-logout:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
 
 /* ══ MAIN ═════════════════════════════════════════════════════════════════ */
-.main {
-  flex: 1; overflow-y: auto;
-  padding: 28px 32px;
-  padding-bottom: 80px;
-  scroll-behavior: smooth;
-}
+.main { flex: 1; overflow-y: auto; padding: 28px 32px 88px; scroll-behavior: smooth; }
 .tab-panel { display: none; animation: fadeIn .18s ease; }
 .tab-panel.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-.panel-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
-}
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
 .panel-header h1 { font-size: 21px; font-weight: 700; letter-spacing: -.3px; }
-.section-title {
-  font-size: 11px; font-weight: 700; color: var(--text-3);
-  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+.section-title { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+/* ══ BOTÕES ═══════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 13.5px; font-weight: 500;
+  border: none; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
+.btn:active { transform: scale(.97); }
+.btn--primary { background: var(--accent); color: var(--accent-text); box-shadow: 0 0 16px var(--accent-glow); }
+.btn--primary:hover { opacity: .88; box-shadow: 0 0 24px var(--accent-glow); }
+.btn--ghost { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
+.btn--ghost:hover { color: var(--text); border-color: var(--border-2); }
+.btn--danger { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(242,95,92,.25); }
 
 /* ══ DASHBOARD ════════════════════════════════════════════════════════════ */
-.dash-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 12px; margin-bottom: 28px;
-}
+.dash-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px,1fr)); gap: 12px; margin-bottom: 24px; }
 .dash-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  display: flex; flex-direction: column; gap: 6px;
-  transition: border-color .2s, transform .2s;
-  cursor: default;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 6px;
+  transition: all .18s; cursor: default;
 }
-.dash-card:hover { transform: translateY(-2px); }
-.dash-card-icon { font-size: 20px; margin-bottom: 2px; }
-.dash-card-val {
-  font-size: 30px; font-weight: 700;
-  font-family: var(--mono); letter-spacing: -.5px;
-  line-height: 1;
-}
-.dash-card-label { font-size: 11.5px; color: var(--text-2); font-weight: 500; margin-top: 2px; }
-.dash-card.accent { border-color: rgba(91,127,255,.35); background: rgba(91,127,255,.06); }
-.dash-card.accent .dash-card-val { color: var(--accent); }
-.dash-card.success { border-color: rgba(45,212,160,.3); background: rgba(45,212,160,.05); }
+.dash-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.dash-card-icon { font-size: 22px; }
+.dash-card-val { font-size: 30px; font-weight: 700; font-family: var(--mono); letter-spacing: -.5px; line-height: 1; }
+.dash-card-label { font-size: 11.5px; color: var(--text-2); font-weight: 500; }
+.dash-card.accent  { border-color: var(--accent-glow); background: var(--accent-dim); }
+.dash-card.accent  .dash-card-val { color: var(--accent); }
+.dash-card.success { border-color: rgba(45,212,160,.3); background: var(--success-dim); }
 .dash-card.success .dash-card-val { color: var(--success); }
-.dash-card.warning { border-color: rgba(245,166,35,.3); background: rgba(245,166,35,.05); }
+.dash-card.warning { border-color: rgba(245,166,35,.3); background: var(--warning-dim); }
 .dash-card.warning .dash-card-val { color: var(--warning); }
-.dash-card.danger { border-color: rgba(242,95,92,.3); background: rgba(242,95,92,.05); }
-.dash-card.danger .dash-card-val { color: var(--danger); }
-
+/* Atalho Bíblia */
+.dash-bible-btn {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: var(--radius); padding: 18px 20px; cursor: pointer;
+  transition: all .18s; margin-bottom: 24px;
+}
+.dash-bible-btn:hover { background: var(--accent); color: var(--accent-text); transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }
+.dash-bible-btn:hover .dash-bible-sub { color: rgba(255,255,255,.7); }
+.dash-bible-icon { font-size: 28px; }
+.dash-bible-title { font-size: 15px; font-weight: 600; }
+.dash-bible-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
 .dash-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.dash-bottom > div > .section-title { margin-top: 0; }
 .dash-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px; margin-bottom: 6px;
-  display: flex; align-items: center; gap: 10px;
-  transition: border-color .15s;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 10px; transition: border-color .15s;
 }
 .dash-item:hover { border-color: var(--border-2); }
-.dash-item-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--accent); flex-shrink: 0;
-}
+.dash-item-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .dash-item-dot.warning { background: var(--warning); }
-.dash-item-text { flex: 1; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-item-text { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dash-item-date { font-size: 11px; color: var(--text-2); font-family: var(--mono); flex-shrink: 0; }
 
 /* ══ CALENDÁRIO ═══════════════════════════════════════════════════════════ */
 .cal-nav { display: flex; align-items: center; gap: 12px; }
-.cal-nav h1 { font-size: 18px; font-weight: 700; min-width: 176px; text-align: center; }
+.cal-nav h1 { font-size: 18px; font-weight: 700; min-width: 170px; text-align: center; }
 .btn-cal-nav {
-  background: var(--surface-2); border: 1px solid var(--border);
-  color: var(--text); width: 32px; height: 32px; border-radius: var(--radius-sm);
-  cursor: pointer; font-size: 17px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s, border-color .15s;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+  width: 34px; height: 34px; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all .15s;
 }
 .btn-cal-nav:hover { background: var(--surface-3); border-color: var(--border-2); }
-
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-.cal-weekday {
-  text-align: center; font-size: 10.5px; font-weight: 700;
-  color: var(--text-3); padding: 8px 0;
-  text-transform: uppercase; letter-spacing: .6px;
-}
+.calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-weekday { text-align: center; font-size: 10.5px; font-weight: 700; color: var(--text-3); padding: 8px 0; text-transform: uppercase; letter-spacing: .6px; }
 .cal-day {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); min-height: 82px; padding: 7px 8px;
+  border-radius: var(--radius-sm); min-height: 80px; padding: 7px;
   cursor: pointer; transition: all .15s; position: relative; overflow: hidden;
 }
-.cal-day:hover { border-color: var(--accent); background: rgba(91,127,255,.04); }
-.cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
-.cal-day.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px rgba(91,127,255,.2); }
+.cal-day:hover { border-color: var(--accent); background: var(--accent-dim); }
+.cal-day.empty { background: transparent; border-color: transparent; cursor: default; pointer-events: none; }
+.cal-day.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-dim); }
 .cal-day.has-escala { border-color: rgba(45,212,160,.4); }
-.cal-day-num {
-  font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px;
-}
+.cal-day-num { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
 .cal-day.today .cal-day-num {
   background: var(--accent); color: #fff;
-  width: 21px; height: 21px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center; font-size: 11px;
 }
 .cal-escala-chip {
   font-size: 9.5px; background: var(--accent-dim); color: var(--accent);
   border-radius: 4px; padding: 2px 5px; margin-bottom: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  border: 1px solid rgba(91,127,255,.2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid var(--accent-glow);
 }
-.cal-obs-dot {
-  position: absolute; top: 5px; right: 5px;
-  width: 5px; height: 5px; border-radius: 50%; background: var(--warning);
-}
+.cal-obs-dot { position: absolute; top: 5px; right: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--warning); }
 .day-detail {
-  margin-top: 14px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 18px 20px; animation: slideUp .16s ease;
+  margin-top: 14px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px; animation: fadeIn .15s ease;
 }
-@keyframes slideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.day-detail-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 14px; font-weight: 600; font-size: 14.5px;
-}
-.day-detail-header button {
-  background: none; border: none; color: var(--text-2); cursor: pointer;
-  font-size: 15px; width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: var(--radius-xs); transition: background .15s;
-}
+.day-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-weight: 600; font-size: 14.5px; }
+.day-detail-header button { background: none; border: none; color: var(--text-2); cursor: pointer; font-size: 15px; width: 26px; height: 26px; border-radius: var(--radius-xs); transition: background .15s; display: flex; align-items: center; justify-content: center; }
 .day-detail-header button:hover { background: var(--surface-2); color: var(--text); }
-.detail-escala {
-  background: var(--surface-2); border-radius: var(--radius-sm);
-  padding: 13px 15px; margin-bottom: 8px;
-  border-left: 3px solid var(--accent);
-}
+.detail-escala { background: var(--surface-2); border-radius: var(--radius-sm); padding: 13px 15px; margin-bottom: 8px; border-left: 3px solid var(--accent); }
 .detail-row { display: flex; gap: 8px; font-size: 12.5px; margin-bottom: 4px; }
 .detail-row span:first-child { color: var(--text-2); min-width: 72px; }
-.detail-obs {
-  margin-top: 8px; padding: 8px 10px;
-  background: var(--warning-dim); border-radius: var(--radius-xs);
-  border-left: 3px solid var(--warning); font-size: 12px;
-}
+.detail-obs { margin-top: 8px; padding: 8px 10px; background: var(--warning-dim); border-radius: var(--radius-xs); border-left: 3px solid var(--warning); font-size: 12px; }
 
-/* ══ BOTÕES ═══════════════════════════════════════════════════════════════ */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: var(--radius-sm);
-  font-family: var(--font); font-size: 13.5px; font-weight: 500;
-  border: none; cursor: pointer; transition: all .15s;
-  white-space: nowrap;
+/* ══ SERVOS ═══════════════════════════════════════════════════════════════ */
+.servos-filtros { margin-bottom: 18px; }
+.servos-filtros input {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: var(--font); font-size: 15px;
+  padding: 10px 14px; outline: none; width: 100%; max-width: 320px; transition: all .2s;
 }
-.btn:active { transform: scale(.97); }
-.btn--primary {
-  background: var(--accent); color: #fff;
-  box-shadow: 0 0 16px rgba(91,127,255,.25);
-}
-.btn--primary:hover {
-  opacity: .88;
-  box-shadow: 0 0 24px rgba(91,127,255,.4);
-}
-.btn--ghost {
-  background: var(--surface-2); color: var(--text-2);
-  border: 1px solid var(--border);
-}
-.btn--ghost:hover { color: var(--text); border-color: var(--border-2); }
-.btn--danger {
-  background: var(--danger-dim); color: var(--danger);
-  border: 1px solid rgba(242,95,92,.25);
-}
-.btn--danger:hover { background: rgba(242,95,92,.2); }
-
-/* ══ CARD GRID ════════════════════════════════════════════════════════════ */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.card {
+.servos-filtros input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; }
+.servo-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px 18px; position: relative;
-  transition: border-color .18s, transform .18s, box-shadow .18s;
+  border-radius: var(--radius); padding: 0; overflow: hidden;
+  transition: all .18s; position: relative;
 }
-.card:hover {
-  border-color: rgba(91,127,255,.4); transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+.servo-card:hover { border-color: var(--accent-glow); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.servo-card-top {
+  background: var(--accent-dim); padding: 20px 18px 16px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
 }
-.card-title {
-  font-size: 14.5px; font-weight: 600; margin-bottom: 10px;
-  font-family: var(--mono); color: var(--accent);
+.servo-card-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; flex-shrink: 0; letter-spacing: -.5px;
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
-.card-row {
-  display: flex; justify-content: space-between;
-  font-size: 12.5px; color: var(--text-2); margin-bottom: 5px;
+.servo-card-info { flex: 1; min-width: 0; }
+.servo-card-name { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.servo-card-funcao { font-size: 11.5px; color: var(--text-2); }
+.servo-card-body { padding: 12px 18px 14px; display: flex; flex-direction: column; gap: 7px; }
+.servo-card-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.servo-card-row-icon { font-size: 13px; width: 18px; flex-shrink: 0; }
+.servo-card-row-val { color: var(--text-2); }
+.servo-card-footer { padding: 0 18px 14px; display: flex; gap: 6px; flex-wrap: wrap; }
+.servo-badge {
+  display: inline-flex; align-items: center;
+  font-size: 10.5px; padding: 3px 9px; border-radius: 20px; font-weight: 500;
 }
-.card-row span:last-child { color: var(--text); text-align: right; max-width: 62%; word-break: break-word; }
-.card-obs {
-  margin-top: 10px; padding: 7px 10px;
-  background: var(--warning-dim); border-radius: var(--radius-xs);
-  border-left: 2px solid var(--warning); font-size: 12px; color: var(--text-2);
-}
-.card-del {
+.servo-badge.aniversario { background: var(--warning-dim); color: var(--warning); border: 1px solid rgba(245,166,35,.2); }
+.servo-badge.inativo { background: var(--surface-3); color: var(--text-3); }
+.servo-card-del {
   position: absolute; top: 10px; right: 10px;
-  background: none; border: none; color: var(--text-3);
-  font-size: 13px; cursor: pointer; opacity: 0; transition: all .15s;
+  background: rgba(0,0,0,.25); border: none; color: rgba(255,255,255,.6);
+  font-size: 12px; cursor: pointer; opacity: 0; transition: all .15s;
   width: 24px; height: 24px; border-radius: var(--radius-xs);
   display: flex; align-items: center; justify-content: center;
 }
+.servo-card:hover .servo-card-del { opacity: 1; }
+.servo-card-del:hover { background: var(--danger); color: #fff; }
+.servo-inactive { opacity: .5; }
+
+/* ══ CARD GENÉRICO (escalas) ══════════════════════════════════════════════ */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px; position: relative; transition: all .18s;
+}
+.card:hover { border-color: var(--accent-glow); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.card-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; font-family: var(--mono); color: var(--accent); }
+.card-row { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-2); margin-bottom: 5px; }
+.card-row span:last-child { color: var(--text); text-align: right; max-width: 62%; word-break: break-word; }
+.card-obs { margin-top: 10px; padding: 7px 10px; background: var(--warning-dim); border-radius: var(--radius-xs); border-left: 2px solid var(--warning); font-size: 12px; }
+.card-del { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--text-3); font-size: 13px; cursor: pointer; opacity: 0; transition: all .15s; width: 24px; height: 24px; border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; }
 .card:hover .card-del { opacity: 1; }
 .card-del:hover { color: var(--danger); background: var(--danger-dim); }
 
-/* Servo card */
-.servo-card-avatar {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--accent-dim); border: 2px solid rgba(91,127,255,.3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 700; color: var(--accent);
-  margin-bottom: 10px; letter-spacing: -.5px;
-}
-.servo-badge {
-  display: inline-flex; align-items: center;
-  font-size: 10.5px; padding: 2px 9px;
-  border-radius: 20px; font-weight: 500; margin-top: 8px;
-}
-.servo-badge.funcao { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(91,127,255,.2); }
-.servo-badge.aniversario { background: var(--warning-dim); color: var(--warning); margin-left: 5px; border: 1px solid rgba(245,166,35,.2); }
-.servo-inactive { opacity: .45; }
-
-/* ══ SERVOS FILTRO ════════════════════════════════════════════════════════ */
-.servos-filtros { margin-bottom: 16px; }
-.servos-filtros input {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-family: var(--font); font-size: 13.5px;
-  padding: 9px 14px; outline: none;
-  width: 100%; max-width: 300px;
-  transition: border-color .2s, box-shadow .2s;
-}
-.servos-filtros input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
-}
-
 /* ══ EMPTY STATE ══════════════════════════════════════════════════════════ */
-.empty-state {
-  color: var(--text-2); font-size: 13px;
-  padding: 48px 24px; text-align: center;
-  grid-column: 1 / -1;
-}
-.empty-state::before { display: block; font-size: 28px; margin-bottom: 10px; }
+.empty-state { color: var(--text-2); font-size: 13px; padding: 48px 24px; text-align: center; grid-column: 1 / -1; }
 
 /* ══ MODAL ════════════════════════════════════════════════════════════════ */
 .modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
-  z-index: 100; align-items: center; justify-content: center; padding: 16px;
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.72);
+  backdrop-filter: blur(6px); z-index: 200; align-items: center; justify-content: center; padding: 16px;
 }
 .modal-overlay.open { display: flex; }
 .modal {
   background: var(--surface); border: 1px solid var(--border-2);
-  border-radius: 18px; width: 100%; max-width: 440px; overflow: hidden;
+  border-radius: 20px; width: 100%; max-width: 440px; overflow: hidden;
   animation: slideUp .18s ease; box-shadow: var(--shadow);
 }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 22px 0;
-}
+@keyframes slideUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 0; }
 .modal-header h2 { font-size: 15.5px; font-weight: 600; }
-.modal-close {
-  background: none; border: none; color: var(--text-2); font-size: 15px;
-  cursor: pointer; width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: var(--radius-xs); transition: background .15s, color .15s;
-}
+.modal-close { background: none; border: none; color: var(--text-2); font-size: 15px; cursor: pointer; width: 28px; height: 28px; border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; transition: all .15s; }
 .modal-close:hover { background: var(--surface-2); color: var(--text); }
-.modal-body {
-  padding: 18px 22px; display: flex; flex-direction: column; gap: 13px;
-  max-height: 68vh; overflow-y: auto;
-}
-.modal-body label {
-  display: flex; flex-direction: column; gap: 5px;
-  font-size: 11.5px; font-weight: 600; color: var(--text-2);
-  letter-spacing: .3px; text-transform: uppercase;
-}
+.modal-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 13px; max-height: 68vh; overflow-y: auto; }
+.modal-body label { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .3px; }
 .modal-body input, .modal-body select, .modal-body textarea {
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-family: var(--font); font-size: 13.5px;
-  padding: 10px 12px; outline: none;
-  transition: border-color .2s, box-shadow .2s; resize: vertical;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: var(--font); font-size: 15px;
+  padding: 10px 12px; outline: none; transition: all .2s; resize: vertical;
 }
-.modal-body input:focus,
-.modal-body select:focus,
-.modal-body textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
-}
+.modal-body input:focus, .modal-body select:focus, .modal-body textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
 .modal-body input[readonly] { opacity: .5; cursor: default; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 0 22px 20px; }
 .modal--wide { max-width: 600px; }
+
+/* ══ VERSE ACTION MODAL ═══════════════════════════════════════════════════ */
+.verse-modal-preview {
+  font-family: 'Lora', serif; font-size: 15px; line-height: 1.7;
+  color: var(--text); padding: 16px; background: var(--surface-2);
+  border-radius: var(--radius-sm); border-left: 3px solid var(--accent); margin-bottom: 4px;
+}
+.verse-modal-ref { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 6px; font-weight: 600; }
+.verse-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.verse-action-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 18px 12px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1px solid var(--border);
+  cursor: pointer; transition: all .15s; font-size: 12.5px; font-weight: 500; color: var(--text-2);
+}
+.verse-action-card:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.verse-action-card .icon { font-size: 22px; }
 
 /* ══ TOAST ════════════════════════════════════════════════════════════════ */
 .toast {
@@ -472,19 +368,18 @@ html, body {
   border-radius: var(--radius); padding: 11px 16px;
   font-size: 13px; color: var(--text); box-shadow: var(--shadow);
   opacity: 0; transform: translateY(10px) scale(.97); transition: all .22s;
-  pointer-events: none; z-index: 300; max-width: 320px;
+  pointer-events: none; z-index: 400; max-width: 300px;
 }
 .toast.show { opacity: 1; transform: translateY(0) scale(1); }
-.toast.ok  { border-color: rgba(45,212,160,.5); color: var(--success); }
+.toast.ok  { border-color: rgba(45,212,160,.5); }
 .toast.err { border-color: rgba(242,95,92,.5); color: var(--danger); }
 
 /* ══ BOTTOM NAV ═══════════════════════════════════════════════════════════ */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(14,16,24,.95); backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border);
-  padding: 6px 0 env(safe-area-inset-bottom); z-index: 50;
-  display: flex;
+  background: var(--surface); border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px); padding: 6px 0 env(safe-area-inset-bottom);
+  z-index: 50; display: flex;
 }
 .bottom-nav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
@@ -495,11 +390,160 @@ html, body {
 .bottom-nav-item span { font-size: 9px; }
 .bottom-nav-item.active { color: var(--accent); }
 
+/* ══ CONFIGURAÇÕES ════════════════════════════════════════════════════════ */
+.settings-section { margin-bottom: 28px; }
+.settings-section-title { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+.settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+/* Theme toggle */
+.theme-toggle { display: flex; gap: 10px; }
+.theme-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 16px; border-radius: var(--radius-sm); cursor: pointer;
+  border: 2px solid var(--border); background: var(--surface-2);
+  transition: all .15s; font-size: 12.5px; font-weight: 500; color: var(--text-2);
+}
+.theme-btn:hover { border-color: var(--border-2); }
+.theme-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.theme-btn .icon { font-size: 24px; }
+/* Accent palette */
+.accent-palette { display: flex; gap: 10px; flex-wrap: wrap; }
+.accent-swatch {
+  width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+  border: 3px solid transparent; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.accent-swatch:hover { transform: scale(1.1); }
+.accent-swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg); }
+/* Preview */
+.settings-preview { margin-top: 14px; padding: 14px; background: var(--surface-2); border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.settings-preview-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.settings-preview-text { font-size: 13px; color: var(--text-2); }
+.settings-preview-btn { margin-left: auto; background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: var(--radius-xs); font-size: 12.5px; font-weight: 500; cursor: default; }
+
+/* ══ BÍBLIA NAVEGAÇÃO ═════════════════════════════════════════════════════ */
+.bible-tabs {
+  display: flex; margin-bottom: 22px; border-bottom: 1px solid var(--border);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.bible-tab {
+  padding: 9px 16px; background: none; border: none;
+  border-bottom: 2px solid transparent; color: var(--text-2);
+  font-family: var(--font); font-size: 13.5px; font-weight: 500;
+  cursor: pointer; transition: all .15s; margin-bottom: -1px; white-space: nowrap;
+}
+.bible-tab:hover { color: var(--text); }
+.bible-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.bible-panel { display: none; }
+.bible-panel.active { display: block; animation: fadeIn .16s ease; }
+.testament-label { font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px; }
+.books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 6px; }
+.book-btn {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 12px; cursor: pointer; text-align: left; transition: all .15s;
+  color: var(--text); font-family: var(--font); font-size: 12.5px; font-weight: 500;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.book-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+.book-btn.has-nota { border-color: rgba(245,166,35,.4); }
+.book-abbr { font-size: 10px; color: var(--text-3); font-family: var(--mono); }
+.chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px,1fr)); gap: 5px; margin-top: 8px; }
+.chap-btn {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 4px; cursor: pointer; text-align: center; transition: all .15s;
+  color: var(--text); font-family: var(--mono); font-size: 14px; font-weight: 600;
+  min-height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.chap-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+.chap-btn.has-nota { border-color: rgba(245,166,35,.5); color: var(--warning); }
+.chap-btn.has-verso-nota { border-color: var(--accent-glow); color: var(--accent); }
+.bible-nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.bible-nav-header span { font-size: 15px; font-weight: 600; }
+.bible-back-btn {
+  background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text-2); font-family: var(--font); font-size: 13px;
+  padding: 7px 13px; cursor: pointer; transition: all .15s; min-height: 36px;
+}
+.bible-back-btn:hover { border-color: var(--accent); color: var(--accent); }
+.bible-cap-nota { margin-bottom: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.bible-cap-nota-toggle { padding: 11px 14px; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--text-2); display: flex; justify-content: space-between; align-items: center; transition: background .15s; user-select: none; min-height: 44px; }
+.bible-cap-nota-toggle:hover { background: var(--surface-2); }
+#capNotaForm, #verseCapNotaForm { padding: 0 14px 14px; }
+#capNotaTexto, #verseCapNotaTexto {
+  width: 100%; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text); font-family: var(--font);
+  font-size: 15px; padding: 10px 12px; outline: none; resize: vertical; transition: all .2s;
+}
+#capNotaTexto:focus, #verseCapNotaTexto:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+/* Versículos */
+.verse-item {
+  padding: 12px 8px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 10px; align-items: flex-start;
+  transition: background .15s; border-radius: var(--radius-xs);
+  cursor: pointer; /* toque abre modal */
+  -webkit-tap-highlight-color: transparent;
+}
+.verse-item:last-child { border-bottom: none; }
+.verse-item:hover, .verse-item:active { background: var(--accent-dim); }
+.verse-item.has-nota { background: rgba(245,166,35,.06); border-left: 2px solid var(--warning); padding-left: 10px; }
+.verse-num { font-family: var(--mono); font-size: 10.5px; color: var(--accent); min-width: 22px; padding-top: 4px; flex-shrink: 0; font-weight: 600; }
+.verse-body { flex: 1; }
+.verse-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.85; color: var(--text); }
+.verse-nota-badge { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11px; color: var(--warning); background: var(--warning-dim); padding: 2px 8px; border-radius: 10px; }
+
+/* Busca */
+.bible-search-box { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.bible-search-row { display: flex; gap: 8px; }
+.bible-search-row input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-family: var(--font); font-size: 15px; padding: 11px 13px; outline: none; transition: all .2s;
+}
+.bible-search-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.bible-result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 12px; }
+.bible-result-ref { font-family: var(--mono); color: var(--accent); font-size: 12.5px; font-weight: 600; margin-bottom: 12px; }
+.bible-verse { display: flex; gap: 10px; padding: 10px 6px; border-bottom: 1px solid var(--border); align-items: flex-start; cursor: pointer; border-radius: var(--radius-xs); transition: background .15s; -webkit-tap-highlight-color: transparent; }
+.bible-verse:last-child { border-bottom: none; }
+.bible-verse:hover, .bible-verse:active { background: var(--accent-dim); }
+.bible-verse-num { font-family: var(--mono); font-size: 10.5px; color: var(--accent); min-width: 22px; padding-top: 3px; font-weight: 600; }
+.bible-verse-text { font-family: 'Lora', serif; font-size: 15px; line-height: 1.75; color: var(--text); flex: 1; }
+.bible-verse-preview { font-family: 'Lora', serif; font-size: 14px; line-height: 1.65; color: var(--text-2); padding: 12px 14px; background: var(--surface-2); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+.bible-loading { text-align: center; padding: 40px; color: var(--text-2); font-size: 13px; }
+.bible-error { text-align: center; padding: 30px; color: var(--danger); font-size: 13px; }
+/* Favoritos */
+.bible-fav-header { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
+.bible-fav-header select { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 14px; padding: 9px 12px; outline: none; }
+.fav-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 8px; transition: border-color .15s; }
+.fav-card:hover { border-color: var(--accent-glow); }
+.fav-ref { font-family: var(--mono); color: var(--accent); font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.fav-text { font-family: 'Lora', serif; font-size: 14.5px; line-height: 1.75; color: var(--text); margin-bottom: 10px; }
+.fav-anotacao { padding: 8px 11px; background: var(--warning-dim); border-left: 3px solid var(--warning); border-radius: var(--radius-xs); font-size: 12.5px; margin-bottom: 10px; color: var(--text-2); }
+.fav-footer { display: flex; gap: 8px; align-items: center; }
+.fav-cat { font-size: 10.5px; padding: 2px 9px; background: var(--accent-dim); color: var(--accent); border-radius: 20px; }
+.fav-del { background: none; border: none; color: var(--text-3); font-size: 13px; cursor: pointer; margin-left: auto; transition: color .15s; }
+.fav-del:hover { color: var(--danger); }
+/* Estudos */
+.estudo-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px; cursor: pointer; transition: all .15s; }
+.estudo-card:hover { border-color: var(--accent-glow); transform: translateY(-1px); }
+.estudo-titulo { font-size: 15.5px; font-weight: 600; margin-bottom: 5px; }
+.estudo-versiculo { font-family: var(--mono); color: var(--accent); font-size: 11.5px; margin-bottom: 8px; }
+.estudo-preview { font-size: 13px; color: var(--text-2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.estudo-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.estudo-cat { font-size: 10.5px; padding: 2px 9px; background: var(--accent-dim); color: var(--accent); border-radius: 20px; }
+.estudo-data { font-size: 11px; color: var(--text-3); font-family: var(--mono); }
+.estudo-acoes { display: flex; gap: 6px; }
+.bible-verse-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text-2); font-size: 12px; padding: 3px 8px; cursor: pointer; transition: all .15s; }
+.bible-verse-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ══ SCROLLBAR ════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+
 /* ══ RESPONSIVO ═══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .sidebar { display: none; }
   .main { padding: 18px 14px 88px; }
-  .dash-cards { grid-template-columns: repeat(2, 1fr); }
+  .dash-cards { grid-template-columns: repeat(2,1fr); }
   .dash-bottom { grid-template-columns: 1fr; }
   .calendar-grid { gap: 2px; }
   .cal-day { min-height: 54px; padding: 5px 6px; }
@@ -507,256 +551,15 @@ html, body {
   .card-grid { grid-template-columns: 1fr; }
   .toast { bottom: 72px; right: 10px; left: 10px; }
   .panel-header h1 { font-size: 18px; }
+  .books-grid { grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); }
+  .chapters-grid { grid-template-columns: repeat(auto-fill, minmax(44px,1fr)); }
+  .verse-text { font-size: 15px; }
+  .theme-toggle { flex-direction: row; }
+  .verse-action-grid { grid-template-columns: 1fr 1fr; }
+  .modal { border-radius: 16px; }
 }
 @media (max-width: 400px) {
-  .dash-cards { grid-template-columns: repeat(2, 1fr); }
+  .dash-cards { grid-template-columns: repeat(2,1fr); }
   .cal-escala-chip { display: none; }
-  .cal-day.has-escala::after {
-    content: ''; display: block;
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--accent); margin: 3px auto 0;
-  }
-}
-
-/* ══ BÍBLIA — TABS ════════════════════════════════════════════════════════ */
-.bible-tabs {
-  display: flex; gap: 0; margin-bottom: 22px;
-  border-bottom: 1px solid var(--border); overflow-x: auto;
-}
-.bible-tab {
-  padding: 8px 16px; background: none; border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text-2); font-family: var(--font); font-size: 13.5px; font-weight: 500;
-  cursor: pointer; transition: all .15s; margin-bottom: -1px;
-  white-space: nowrap;
-}
-.bible-tab:hover { color: var(--text); }
-.bible-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.bible-panel { display: none; }
-.bible-panel.active { display: block; animation: fadeIn .16s ease; }
-
-/* Testamento label */
-.testament-label {
-  font-size: 10.5px; font-weight: 700; color: var(--text-3);
-  text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px;
-}
-
-/* Grid de livros */
-.books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 6px; }
-.book-btn {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 9px 11px;
-  cursor: pointer; text-align: left; transition: all .15s;
-  color: var(--text); font-family: var(--font); font-size: 12.5px; font-weight: 500;
-  display: flex; flex-direction: column; gap: 3px;
-}
-.book-btn:hover { border-color: var(--accent); background: rgba(91,127,255,.05); }
-.book-btn.has-nota { border-color: rgba(245,166,35,.35); }
-.book-abbr { font-size: 10px; color: var(--text-3); font-family: var(--mono); }
-
-/* Grid de capítulos */
-.chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 5px; margin-top: 8px; }
-.chap-btn {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 10px 4px;
-  cursor: pointer; text-align: center; transition: all .15s;
-  color: var(--text); font-family: var(--mono); font-size: 14px; font-weight: 600;
-}
-.chap-btn:hover { border-color: var(--accent); background: rgba(91,127,255,.06); }
-.chap-btn.has-nota { border-color: rgba(245,166,35,.5); color: var(--warning); }
-.chap-btn.has-verso-nota { border-color: rgba(91,127,255,.5); }
-
-/* Nav header Bíblia */
-.bible-nav-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-}
-.bible-nav-header span { font-size: 15px; font-weight: 600; }
-.bible-back-btn {
-  background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
-  color: var(--text-2); font-family: var(--font); font-size: 13px;
-  padding: 6px 12px; cursor: pointer; transition: all .15s;
-}
-.bible-back-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-/* Nota do capítulo */
-.bible-cap-nota {
-  margin-bottom: 14px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
-}
-.bible-cap-nota-toggle {
-  padding: 10px 14px; cursor: pointer; font-size: 12.5px; font-weight: 500;
-  color: var(--text-2); display: flex; justify-content: space-between; align-items: center;
-  transition: background .15s; user-select: none;
-}
-.bible-cap-nota-toggle:hover { background: var(--surface-2); }
-#capNotaForm, #verseCapNotaForm { padding: 0 14px 14px; }
-#capNotaTexto, #verseCapNotaTexto {
-  width: 100%; background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text); font-family: var(--font);
-  font-size: 13.5px; padding: 10px 12px; outline: none; resize: vertical;
-  transition: border-color .2s, box-shadow .2s;
-}
-#capNotaTexto:focus, #verseCapNotaTexto:focus {
-  border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim);
-}
-
-/* Versículos */
-.verse-item {
-  padding: 11px 0; border-bottom: 1px solid var(--border);
-  display: flex; gap: 10px; align-items: flex-start;
-  transition: background .15s; border-radius: var(--radius-xs);
-}
-.verse-item:last-child { border-bottom: none; }
-.verse-item.has-nota { background: rgba(245,166,35,.05); padding: 10px 8px; margin: 2px -8px; border-radius: var(--radius-xs); }
-.verse-num {
-  font-family: var(--mono); font-size: 10.5px; color: var(--text-3);
-  min-width: 22px; padding-top: 4px; flex-shrink: 0; text-align: right;
-}
-.verse-body { flex: 1; }
-.verse-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.85; color: var(--text); }
-.verse-nota-preview {
-  margin-top: 7px; padding: 6px 10px;
-  background: var(--warning-dim); border-left: 2px solid var(--warning);
-  border-radius: 4px; font-size: 11.5px; color: var(--text-2);
-}
-.verse-actions {
-  display: flex; gap: 5px; margin-top: 8px;
-  opacity: 0; transition: opacity .15s;
-}
-.verse-item:hover .verse-actions,
-.verse-item.has-nota .verse-actions { opacity: 1; }
-.verse-action-btn {
-  background: none; border: 1px solid var(--border); border-radius: var(--radius-xs);
-  color: var(--text-2); font-size: 11px; padding: 3px 8px;
-  cursor: pointer; transition: all .15s;
-}
-.verse-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-/* Preview de versículo em modal */
-.bible-verse-preview {
-  font-family: 'Lora', serif; font-size: 14px; line-height: 1.65;
-  color: var(--text-2); padding: 12px 14px;
-  background: var(--surface-2); border-radius: var(--radius-sm);
-  border-left: 3px solid var(--accent); margin-bottom: 4px;
-}
-
-/* Busca */
-.bible-search-box { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
-.bible-search-row { display: flex; gap: 8px; }
-.bible-search-row input {
-  flex: 1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-family: var(--font); font-size: 13.5px; padding: 10px 13px; outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.bible-search-row input:focus {
-  border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim);
-}
-.bible-result {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
-}
-.bible-result-ref {
-  font-family: var(--mono); color: var(--accent); font-size: 12.5px;
-  font-weight: 600; margin-bottom: 12px;
-}
-.bible-verse {
-  display: flex; gap: 10px; padding: 8px 0;
-  border-bottom: 1px solid var(--border); align-items: flex-start;
-}
-.bible-verse:last-child { border-bottom: none; }
-.bible-verse-num {
-  font-family: var(--mono); font-size: 10.5px; color: var(--text-3);
-  min-width: 22px; padding-top: 3px; flex-shrink: 0;
-}
-.bible-verse-text {
-  font-family: 'Lora', serif; font-size: 15px; line-height: 1.75; color: var(--text); flex: 1;
-}
-.bible-verse-actions { display: flex; gap: 6px; opacity: 0; transition: opacity .15s; padding-top: 2px; }
-.bible-verse:hover .bible-verse-actions { opacity: 1; }
-.bible-verse-btn {
-  background: none; border: 1px solid var(--border); border-radius: var(--radius-xs);
-  color: var(--text-2); font-size: 12px; padding: 3px 8px;
-  cursor: pointer; transition: all .15s;
-}
-.bible-verse-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-.bible-loading { text-align: center; padding: 40px; color: var(--text-2); font-size: 13px; }
-.bible-error { text-align: center; padding: 30px; color: var(--danger); font-size: 13px; }
-
-/* Favoritos */
-.bible-fav-header { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
-.bible-fav-header select {
-  flex: 1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-family: var(--font); font-size: 13px; padding: 8px 12px; outline: none;
-  transition: border-color .2s;
-}
-.bible-fav-header select:focus { border-color: var(--accent); }
-.fav-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px 18px; margin-bottom: 8px;
-  transition: border-color .15s;
-}
-.fav-card:hover { border-color: rgba(91,127,255,.4); }
-.fav-ref {
-  font-family: var(--mono); color: var(--accent);
-  font-size: 12px; font-weight: 600; margin-bottom: 8px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.fav-text {
-  font-family: 'Lora', serif; font-size: 14.5px; line-height: 1.75;
-  color: var(--text); margin-bottom: 10px;
-}
-.fav-anotacao {
-  padding: 8px 11px; background: var(--warning-dim);
-  border-left: 3px solid var(--warning); border-radius: var(--radius-xs);
-  font-size: 12.5px; margin-bottom: 10px; color: var(--text-2);
-}
-.fav-footer { display: flex; gap: 8px; align-items: center; }
-.fav-cat {
-  font-size: 10.5px; padding: 2px 9px;
-  background: var(--accent-dim); color: var(--accent);
-  border-radius: 20px; border: 1px solid rgba(91,127,255,.2);
-}
-.fav-del {
-  background: none; border: none; color: var(--text-3);
-  font-size: 13px; cursor: pointer; margin-left: auto;
-  transition: color .15s;
-}
-.fav-del:hover { color: var(--danger); }
-
-/* Estudos */
-.estudo-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
-  cursor: pointer; transition: all .15s;
-}
-.estudo-card:hover { border-color: rgba(91,127,255,.4); transform: translateY(-1px); }
-.estudo-titulo { font-size: 15.5px; font-weight: 600; margin-bottom: 5px; }
-.estudo-versiculo {
-  font-family: var(--mono); color: var(--accent);
-  font-size: 11.5px; margin-bottom: 8px;
-}
-.estudo-preview {
-  font-size: 13px; color: var(--text-2); line-height: 1.5;
-  display: -webkit-box; -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; overflow: hidden;
-}
-.estudo-footer {
-  display: flex; justify-content: space-between; align-items: center; margin-top: 12px;
-}
-.estudo-cat {
-  font-size: 10.5px; padding: 2px 9px;
-  background: var(--accent-dim); color: var(--accent); border-radius: 20px;
-}
-.estudo-data { font-size: 11px; color: var(--text-3); font-family: var(--mono); }
-.estudo-acoes { display: flex; gap: 6px; }
-
-/* Responsivo Bíblia */
-@media (max-width: 768px) {
-  .books-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-  .chapters-grid { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
-  .verse-text { font-size: 15px; }
-  .bible-tab { padding: 8px 12px; font-size: 12.5px; }
+  .cal-day.has-escala::after { content:''; display:block; width:4px; height:4px; border-radius:50%; background:var(--accent); margin:2px auto 0; }
 }

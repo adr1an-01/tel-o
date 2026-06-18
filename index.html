@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark" data-accent="indigo">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="Central"/>
@@ -19,10 +19,7 @@
 <!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <div class="login-logo">
-      <span class="login-logo-icon">✦</span>
-      <span>Central de Controle</span>
-    </div>
+    <div class="login-logo"><span class="login-logo-icon">✦</span><span>Central de Controle</span></div>
     <p class="login-sub">Acesso restrito à equipe</p>
     <div class="login-form">
       <label>Usuário<input type="text" id="loginUser" placeholder="admin" autocomplete="username"/></label>
@@ -36,26 +33,13 @@
 <!-- APP -->
 <div class="layout" id="appLayout" style="display:none">
   <aside class="sidebar">
-    <div class="logo">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Central</span>
-    </div>
+    <div class="logo"><span class="logo-icon">✦</span><span class="logo-text">Central</span></div>
     <nav class="nav">
-      <button class="nav-item active" data-tab="dashboard">
-        <span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span>
-      </button>
-      <button class="nav-item" data-tab="calendario">
-        <span class="nav-icon">📅</span><span class="nav-label">Calendário</span>
-      </button>
-      <button class="nav-item" data-tab="escalas">
-        <span class="nav-icon">🎛️</span><span class="nav-label">Escalas</span>
-      </button>
-      <button class="nav-item" data-tab="servos">
-        <span class="nav-icon">👥</span><span class="nav-label">Servos</span>
-      </button>
-      <button class="nav-item" data-tab="biblia">
-        <span class="nav-icon">📖</span><span class="nav-label">Bíblia</span>
-      </button>
+      <button class="nav-item" data-tab="biblia"><span class="nav-icon">📖</span><span>Bíblia</span></button>
+      <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">⚡</span><span>Dashboard</span></button>
+      <button class="nav-item" data-tab="calendario"><span class="nav-icon">📅</span><span>Calendário</span></button>
+      <button class="nav-item" data-tab="servos"><span class="nav-icon">👥</span><span>Servos</span></button>
+      <button class="nav-item" data-tab="config"><span class="nav-icon">⚙️</span><span>Config</span></button>
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-user" id="sidebarUser"></div>
@@ -65,19 +49,94 @@
 
   <main class="main">
 
+    <!-- BÍBLIA -->
+    <section class="tab-panel" id="tab-biblia">
+      <div id="nivel-livros">
+        <div class="panel-header"><h1>Bíblia — NVI</h1></div>
+        <div class="bible-tabs">
+          <button class="bible-tab active" data-btab="livros">📖 Livros</button>
+          <button class="bible-tab" data-btab="busca">🔍 Busca</button>
+          <button class="bible-tab" data-btab="favoritos">⭐ Favoritos</button>
+          <button class="bible-tab" data-btab="estudos">📝 Estudos</button>
+        </div>
+        <div class="bible-panel active" id="btab-livros">
+          <div class="testament-label">Antigo Testamento</div>
+          <div class="books-grid" id="booksAT"></div>
+          <div class="testament-label" style="margin-top:20px">Novo Testamento</div>
+          <div class="books-grid" id="booksNT"></div>
+        </div>
+        <div class="bible-panel" id="btab-busca">
+          <div class="bible-search-box">
+            <div class="bible-search-row">
+              <input type="text" id="bibliaRef" placeholder="Ex: João 3:16 ou João 3:1-10" inputmode="text"/>
+              <button class="btn btn--primary" onclick="buscarPorReferencia()">Buscar</button>
+            </div>
+            <div class="bible-search-row">
+              <input type="text" id="bibliaPalavra" placeholder="Buscar por palavra-chave…" inputmode="text"/>
+              <button class="btn btn--ghost" onclick="buscarPorPalavra()">Buscar</button>
+            </div>
+          </div>
+          <div id="bibliaResultado"></div>
+        </div>
+        <div class="bible-panel" id="btab-favoritos">
+          <div class="bible-fav-header">
+            <select id="favCategoria" onchange="carregarFavoritos()"><option value="todas">Todas as categorias</option></select>
+          </div>
+          <div id="listaFavoritos"></div>
+        </div>
+        <div class="bible-panel" id="btab-estudos">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+            <button class="btn btn--primary" onclick="abrirModal('modal-estudo')">+ Novo Estudo</button>
+          </div>
+          <div id="listaEstudos"></div>
+        </div>
+      </div>
+      <div id="nivel-capitulos" style="display:none">
+        <div class="bible-nav-header">
+          <button class="bible-back-btn" onclick="voltarLivros()">‹ Livros</button>
+          <span id="livroAtualTitulo"></span>
+          <span></span>
+        </div>
+        <div class="bible-cap-nota" id="capNotaArea">
+          <div class="bible-cap-nota-toggle" onclick="toggleNotaCapitulo()">📓 Nota do livro <span id="capNotaToggleIcon">▼</span></div>
+          <div id="capNotaForm" style="display:none">
+            <textarea id="capNotaTexto" rows="3" placeholder="Anotação geral deste livro…"></textarea>
+            <button class="btn btn--primary" style="margin-top:8px;width:100%" onclick="salvarNotaCapituloAtual()">Salvar nota</button>
+          </div>
+        </div>
+        <div class="chapters-grid" id="chaptersGrid"></div>
+      </div>
+      <div id="nivel-versiculos" style="display:none">
+        <div class="bible-nav-header">
+          <button class="bible-back-btn" onclick="voltarCapitulos()">‹ Capítulos</button>
+          <span id="capAtualTitulo"></span>
+          <span></span>
+        </div>
+        <div class="bible-cap-nota" id="verseCapNotaArea">
+          <div class="bible-cap-nota-toggle" onclick="toggleNotaCapituloVerses()">📓 Nota do capítulo <span id="verseCapNotaIcon">▼</span></div>
+          <div id="verseCapNotaForm" style="display:none">
+            <textarea id="verseCapNotaTexto" rows="3" placeholder="Anotação geral deste capítulo…"></textarea>
+            <button class="btn btn--primary" style="margin-top:8px;width:100%" onclick="salvarNotaCapituloVerses()">Salvar nota</button>
+          </div>
+        </div>
+        <div id="versiculosList"></div>
+      </div>
+    </section>
+
     <!-- DASHBOARD -->
     <section class="tab-panel active" id="tab-dashboard">
       <div class="panel-header"><h1>Dashboard</h1></div>
+      <div class="dash-bible-btn" onclick="irParaBiblia()">
+        <div class="dash-bible-icon">📖</div>
+        <div>
+          <div class="dash-bible-title">Abrir a Bíblia</div>
+          <div class="dash-bible-sub">Leia, anote e favorite versículos</div>
+        </div>
+      </div>
       <div class="dash-cards" id="dashCards"></div>
       <div class="dash-bottom">
-        <div>
-          <h2 class="section-title">Próximas Escalas</h2>
-          <div id="dashProximas"></div>
-        </div>
-        <div>
-          <h2 class="section-title">Aniversariantes</h2>
-          <div id="dashAniversarios"></div>
-        </div>
+        <div><h2 class="section-title">Próximas Escalas</h2><div id="dashProximas"></div></div>
+        <div><h2 class="section-title">Aniversariantes do mês</h2><div id="dashAniversarios"></div></div>
       </div>
     </section>
 
@@ -101,15 +160,6 @@
       </div>
     </section>
 
-    <!-- ESCALAS -->
-    <section class="tab-panel" id="tab-escalas">
-      <div class="panel-header">
-        <h1>Escalas</h1>
-        <button class="btn btn--primary" onclick="abrirModal('modal-escala')">+ Nova Escala</button>
-      </div>
-      <div class="card-grid" id="lista-escalas"></div>
-    </section>
-
     <!-- SERVOS -->
     <section class="tab-panel" id="tab-servos">
       <div class="panel-header">
@@ -117,104 +167,137 @@
         <button class="btn btn--primary" onclick="abrirModal('modal-servo')">+ Novo Servo</button>
       </div>
       <div class="servos-filtros">
-        <input type="text" id="buscarServo" placeholder="Buscar servo…" oninput="filtrarServos()"/>
+        <input type="text" id="buscarServo" placeholder="Buscar servo…" oninput="filtrarServos()" inputmode="search"/>
       </div>
       <div class="card-grid" id="lista-servos"></div>
     </section>
 
-    <!-- BÍBLIA -->
-    <section class="tab-panel" id="tab-biblia">
-      <!-- Nível 1: Livros -->
-      <div id="nivel-livros">
-        <div class="panel-header"><h1>Bíblia — NVI</h1></div>
-        <div class="bible-tabs">
-          <button class="bible-tab active" data-btab="livros">📖 Livros</button>
-          <button class="bible-tab" data-btab="busca">🔍 Busca</button>
-          <button class="bible-tab" data-btab="favoritos">⭐ Favoritos</button>
-          <button class="bible-tab" data-btab="estudos">📝 Estudos</button>
-        </div>
-        <div class="bible-panel active" id="btab-livros">
-          <div class="testament-label">Antigo Testamento</div>
-          <div class="books-grid" id="booksAT"></div>
-          <div class="testament-label" style="margin-top:20px">Novo Testamento</div>
-          <div class="books-grid" id="booksNT"></div>
-        </div>
-        <div class="bible-panel" id="btab-busca">
-          <div class="bible-search-box">
-            <div class="bible-search-row">
-              <input type="text" id="bibliaRef" placeholder="Ex: João 3:16 ou João 3:1-10"/>
-              <button class="btn btn--primary" onclick="buscarPorReferencia()">Buscar</button>
-            </div>
-            <div class="bible-search-row">
-              <input type="text" id="bibliaPalavra" placeholder="Buscar por palavra-chave…"/>
-              <button class="btn btn--ghost" onclick="buscarPorPalavra()">Buscar</button>
-            </div>
+    <!-- CONFIGURAÇÕES -->
+    <section class="tab-panel" id="tab-config">
+      <div class="panel-header"><h1>Configurações</h1></div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Aparência</div>
+        <div class="settings-card">
+          <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text-2)">Tema</div>
+          <div class="theme-toggle">
+            <button class="theme-btn active" id="btn-dark" onclick="setTheme('dark')">
+              <span class="icon">🌙</span>Escuro
+            </button>
+            <button class="theme-btn" id="btn-light" onclick="setTheme('light')">
+              <span class="icon">☀️</span>Claro
+            </button>
           </div>
-          <div id="bibliaResultado"></div>
-        </div>
-        <div class="bible-panel" id="btab-favoritos">
-          <div class="bible-fav-header">
-            <select id="favCategoria" onchange="carregarFavoritos()"><option value="todas">Todas as categorias</option></select>
-          </div>
-          <div id="listaFavoritos"></div>
-        </div>
-        <div class="bible-panel" id="btab-estudos">
-          <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
-            <button class="btn btn--primary" onclick="abrirModal('modal-estudo')">+ Novo Estudo</button>
-          </div>
-          <div id="listaEstudos"></div>
         </div>
       </div>
 
-      <!-- Nível 2: Capítulos -->
-      <div id="nivel-capitulos" style="display:none">
-        <div class="bible-nav-header">
-          <button class="bible-back-btn" onclick="voltarLivros()">‹ Livros</button>
-          <span id="livroAtualTitulo"></span>
-          <span></span>
-        </div>
-        <div class="bible-cap-nota" id="capNotaArea">
-          <div class="bible-cap-nota-toggle" onclick="toggleNotaCapitulo()">
-            📓 Nota do livro <span id="capNotaToggleIcon">▼</span>
+      <div class="settings-section">
+        <div class="settings-section-title">Cor de destaque</div>
+        <div class="settings-card">
+          <div class="accent-palette" id="accentPalette">
+            <div class="accent-swatch active" data-accent="indigo"  style="background:#5b7fff" title="Índigo">✓</div>
+            <div class="accent-swatch" data-accent="purple"  style="background:#a855f7" title="Roxo"></div>
+            <div class="accent-swatch" data-accent="blue"    style="background:#3b9eff" title="Azul"></div>
+            <div class="accent-swatch" data-accent="green"   style="background:#22c47a" title="Verde"></div>
+            <div class="accent-swatch" data-accent="orange"  style="background:#ff8c3b" title="Laranja"></div>
+            <div class="accent-swatch" data-accent="rose"    style="background:#f0527a" title="Rosa"></div>
           </div>
-          <div id="capNotaForm" style="display:none">
-            <textarea id="capNotaTexto" rows="3" placeholder="Anotação geral deste livro…"></textarea>
-            <button class="btn btn--primary" style="margin-top:8px;width:100%" onclick="salvarNotaCapituloAtual()">Salvar nota</button>
+          <div class="settings-preview">
+            <div class="settings-preview-dot"></div>
+            <span class="settings-preview-text">Pré-visualização da cor aplicada</span>
+            <div class="settings-preview-btn">Botão</div>
           </div>
         </div>
-        <div class="chapters-grid" id="chaptersGrid"></div>
       </div>
 
-      <!-- Nível 3: Versículos -->
-      <div id="nivel-versiculos" style="display:none">
-        <div class="bible-nav-header">
-          <button class="bible-back-btn" onclick="voltarCapitulos()">‹ Capítulos</button>
-          <span id="capAtualTitulo"></span>
-          <span></span>
-        </div>
-        <div class="bible-cap-nota" id="verseCapNotaArea">
-          <div class="bible-cap-nota-toggle" onclick="toggleNotaCapituloVerses()">
-            📓 Nota do capítulo <span id="verseCapNotaIcon">▼</span>
-          </div>
-          <div id="verseCapNotaForm" style="display:none">
-            <textarea id="verseCapNotaTexto" rows="3" placeholder="Anotação geral deste capítulo…"></textarea>
-            <button class="btn btn--primary" style="margin-top:8px;width:100%" onclick="salvarNotaCapituloVerses()">Salvar nota</button>
+      <div class="settings-section">
+        <div class="settings-section-title">Conta</div>
+        <div class="settings-card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="font-size:32px">👤</div>
+            <div>
+              <div id="configUsuario" style="font-weight:600;font-size:14px"></div>
+              <div style="font-size:12px;color:var(--text-2);margin-top:2px">Acesso de administrador</div>
+            </div>
+            <button class="btn btn--ghost" style="margin-left:auto" onclick="fazerLogout()">Sair</button>
           </div>
         </div>
-        <div id="versiculosList"></div>
       </div>
     </section>
 
   </main>
 </div>
 
-<!-- MODAIS -->
-<div class="modal-overlay" id="modal-escala">
+<!-- ══ MODAIS ══════════════════════════════════════════════════════════════ -->
+
+<!-- Ação de versículo -->
+<div class="modal-overlay" id="modal-verso-acao">
   <div class="modal">
     <div class="modal-header">
-      <h2>Nova Escala</h2>
-      <button class="modal-close" onclick="fecharModal('modal-escala')">✕</button>
+      <h2 id="versoAcaoRef">Versículo</h2>
+      <button class="modal-close" onclick="fecharModal('modal-verso-acao')">✕</button>
     </div>
+    <div class="modal-body">
+      <div class="verse-modal-preview" id="versoAcaoTexto"></div>
+      <div class="verse-action-grid">
+        <div class="verse-action-card" onclick="acaoVerso('anotar')">
+          <span class="icon">📝</span>Anotar
+        </div>
+        <div class="verse-action-card" onclick="acaoVerso('favoritar')">
+          <span class="icon">⭐</span>Favoritar
+        </div>
+        <div class="verse-action-card" onclick="acaoVerso('copiar')">
+          <span class="icon">📋</span>Copiar
+        </div>
+        <div class="verse-action-card" onclick="acaoVerso('compartilhar')">
+          <span class="icon">🔗</span>Compartilhar
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Anotação de versículo -->
+<div class="modal-overlay" id="modal-anotacao-verso">
+  <div class="modal">
+    <div class="modal-header"><h2>Anotação</h2><button class="modal-close" onclick="fecharModal('modal-anotacao-verso')">✕</button></div>
+    <div class="modal-body">
+      <div class="bible-verse-preview" id="anotacaoVersoPreview"></div>
+      <label>Anotação<textarea id="anotacaoVersoTexto" rows="5" placeholder="Escreve a tua anotação…"></textarea></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-anotacao-verso')">Cancelar</button>
+      <button class="btn btn--primary" onclick="salvarAnotacaoVerso()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Favorito -->
+<div class="modal-overlay" id="modal-favorito">
+  <div class="modal">
+    <div class="modal-header"><h2>Adicionar aos Favoritos</h2><button class="modal-close" onclick="fecharModal('modal-favorito')">✕</button></div>
+    <div class="modal-body">
+      <div class="bible-verse-preview" id="favoritoPreview"></div>
+      <label>Categoria
+        <select id="favoritoCategoria">
+          <option value="geral">Geral</option><option value="pregacao">Pregação</option>
+          <option value="estudo">Estudo</option><option value="devocional">Devocional</option>
+          <option value="promessa">Promessa</option>
+        </select>
+      </label>
+      <label>Anotação<textarea id="favoritoAnotacao" rows="3" placeholder="Opcional…"></textarea></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-favorito')">Cancelar</button>
+      <button class="btn btn--primary" onclick="confirmarFavorito()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Escala -->
+<div class="modal-overlay" id="modal-escala">
+  <div class="modal">
+    <div class="modal-header"><h2>Nova Escala</h2><button class="modal-close" onclick="fecharModal('modal-escala')">✕</button></div>
     <div class="modal-body">
       <label>Data<input type="date" id="esc-data"/></label>
       <label>Operador<select id="esc-operador"><option value="">Selecionar servo…</option></select></label>
@@ -228,12 +311,10 @@
   </div>
 </div>
 
+<!-- Servo -->
 <div class="modal-overlay" id="modal-servo">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Novo Servo</h2>
-      <button class="modal-close" onclick="fecharModal('modal-servo')">✕</button>
-    </div>
+    <div class="modal-header"><h2>Novo Servo</h2><button class="modal-close" onclick="fecharModal('modal-servo')">✕</button></div>
     <div class="modal-body">
       <label>Nome<input type="text" id="srv-nome" placeholder="Nome completo"/></label>
       <label>Telefone<input type="tel" id="srv-telefone" placeholder="(51) 9 0000-0000"/></label>
@@ -248,65 +329,18 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-anotacao-verso">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Anotação do Versículo</h2>
-      <button class="modal-close" onclick="fecharModal('modal-anotacao-verso')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="bible-verse-preview" id="anotacaoVersoPreview"></div>
-      <label>Anotação<textarea id="anotacaoVersoTexto" rows="5" placeholder="Escreve a tua anotação…"></textarea></label>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn--ghost" onclick="fecharModal('modal-anotacao-verso')">Cancelar</button>
-      <button class="btn btn--primary" onclick="salvarAnotacaoVerso()">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-favorito">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Adicionar aos Favoritos</h2>
-      <button class="modal-close" onclick="fecharModal('modal-favorito')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="bible-verse-preview" id="favoritoPreview"></div>
-      <label>Categoria
-        <select id="favoritoCategoria">
-          <option value="geral">Geral</option>
-          <option value="pregacao">Pregação</option>
-          <option value="estudo">Estudo</option>
-          <option value="devocional">Devocional</option>
-          <option value="promessa">Promessa</option>
-        </select>
-      </label>
-      <label>Anotação<textarea id="favoritoAnotacao" rows="3" placeholder="Opcional…"></textarea></label>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn--ghost" onclick="fecharModal('modal-favorito')">Cancelar</button>
-      <button class="btn btn--primary" onclick="confirmarFavorito()">Salvar</button>
-    </div>
-  </div>
-</div>
-
+<!-- Estudo -->
 <div class="modal-overlay" id="modal-estudo">
   <div class="modal modal--wide">
-    <div class="modal-header">
-      <h2 id="modalEstudoTitulo">Novo Estudo</h2>
-      <button class="modal-close" onclick="fecharModal('modal-estudo')">✕</button>
-    </div>
+    <div class="modal-header"><h2 id="modalEstudoTitulo">Novo Estudo</h2><button class="modal-close" onclick="fecharModal('modal-estudo')">✕</button></div>
     <div class="modal-body">
       <label>Título<input type="text" id="est-titulo" placeholder="Título do estudo ou pregação"/></label>
       <label>Versículo base<input type="text" id="est-versiculo" placeholder="Ex: João 3:16"/></label>
       <label>Texto base<textarea id="est-texto-base" rows="2" placeholder="Cole o versículo aqui…"></textarea></label>
       <label>Categoria
         <select id="est-categoria">
-          <option value="geral">Geral</option>
-          <option value="pregacao">Pregação</option>
-          <option value="estudo">Estudo Bíblico</option>
-          <option value="devocional">Devocional</option>
+          <option value="geral">Geral</option><option value="pregacao">Pregação</option>
+          <option value="estudo">Estudo Bíblico</option><option value="devocional">Devocional</option>
           <option value="celula">Célula</option>
         </select>
       </label>
@@ -322,11 +356,11 @@
 <div class="toast" id="toast"></div>
 
 <nav class="bottom-nav" id="bottomNav" style="display:none">
+  <button class="bottom-nav-item" data-tab="biblia">📖<span>Bíblia</span></button>
   <button class="bottom-nav-item active" data-tab="dashboard">⚡<span>Home</span></button>
   <button class="bottom-nav-item" data-tab="calendario">📅<span>Agenda</span></button>
-  <button class="bottom-nav-item" data-tab="escalas">🎛️<span>Escalas</span></button>
-  <button class="bottom-nav-item" data-tab="biblia">📖<span>Bíblia</span></button>
   <button class="bottom-nav-item" data-tab="servos">👥<span>Servos</span></button>
+  <button class="bottom-nav-item" data-tab="config">⚙️<span>Config</span></button>
 </nav>
 
 <script src="app.js"></script>

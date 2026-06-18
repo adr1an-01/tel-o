@@ -1,16 +1,16 @@
-const CACHE = 'central-v4';
-const ASSETS = ['/', '/style.css', '/app.js', '/manifest.json', '/biblia.json'];
+const CACHE = 'central-v5';
+const ASSETS = ['/', '/style.css', '/app.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS.filter(a => a !== '/biblia.json')))
+    caches.open(CACHE).then(c => c.addAll(ASSETS))
       .then(() => caches.open(CACHE))
-      .then(c => c.add(new Request('/biblia.json', {cache: 'no-cache'})).catch(()=>{}))
+      .then(c => c.add(new Request('/biblia.json', {cache:'no-cache'})).catch(()=>{}))
   );
   self.skipWaiting();
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
   self.clients.claim();
 });
 self.addEventListener('fetch', e => {
