@@ -1,5 +1,12 @@
 const API = '/api';
-const BIBLE_API = 'https://bible-api.com';
+let BIBLIA_DATA = null;
+
+async function carregarBibliaJSON() {
+  if (BIBLIA_DATA) return BIBLIA_DATA;
+  const res = await fetch('/biblia.json');
+  BIBLIA_DATA = await res.json();
+  return BIBLIA_DATA;
+}
 const TOKEN_KEY = 'central_token';
 
 // ── Estado ────────────────────────────────────────────────────────────────────
@@ -308,16 +315,16 @@ async function abrirCapitulo(cap) {
     document.getElementById('verseCapNotaTexto').value = res.texto||'';
   } catch { document.getElementById('verseCapNotaTexto').value=''; }
 
-  // Buscar versículos
+  // Buscar versículos do JSON local
   const lista = document.getElementById('versiculosList');
   lista.innerHTML = '<div class="bible-loading">Carregando…</div>';
   try {
-    const query = `${livroAtual.slug}+${cap}`;
-    const res = await fetch(`${BIBLE_API}/${encodeURIComponent(query)}?translation=almeida`);
-    const data = await res.json();
-    if (!data.verses?.length) { lista.innerHTML='<div class="bible-error">Não encontrado.</div>'; return; }
-    renderizarVersiculos(data.verses);
-  } catch { lista.innerHTML='<div class="bible-error">Erro ao buscar. Verifique a conexão.</div>'; }
+    const biblia = await carregarBibliaJSON();
+    const livroData = biblia[livroAtual.slug];
+    if (!livroData || !livroData.caps[cap-1]) { lista.innerHTML='<div class="bible-error">Capítulo não encontrado.</div>'; return; }
+    const verses = livroData.caps[cap-1].map((texto, i) => ({ verse: i+1, text: texto }));
+    renderizarVersiculos(verses);
+  } catch { lista.innerHTML='<div class="bible-error">Erro ao carregar.</div>'; }
 }
 
 function voltarCapitulos() {
@@ -459,30 +466,95 @@ function editarEstudo(id) {
 }
 async function excluirEstudo(id,titulo){ if(!confirm(`Excluir "${titulo}"?`))return; try{await post({acao:'excluir_estudo',id});toast('Removido.','ok');carregarEstudos();}catch{toast('Erro.','err');} }
 
-// Busca bíblia
+// Mapa de nomes PT → slug
+const NOMES_SLUG = {};
+const SLUGS_NOMES = {};
+// preenchido após carregar JSON
+
+async function iniciarMapaNomes() {
+  const biblia = await carregarBibliaJSON();
+  Object.entries(biblia).forEach(([slug, livro]) => {
+    SLUGS_NOMES[slug] = livro.nome;
+    NOMES_SLUG[livro.nome.toLowerCase()] = slug;
+    // abreviações comuns
+    const abrev = livro.abbr?.toLowerCase();
+    if (abrev) NOMES_SLUG[abrev] = slug;
+  });
+}
+
+function parsearRefLocal(ref) {
+  // Ex: "João 3:16", "1Jo 1:1-3", "Sl 23"
+  const m = ref.trim().match(/^(.+?)\s+(\d+)(?::(\d+)(?:-(\d+))?)?$/i);
+  if (!m) return null;
+  const [, livroStr, cap, vers, versEnd] = m;
+  const slug = NOMES_SLUG[livroStr.trim().toLowerCase()];
+  if (!slug) return null;
+  return { slug, cap: parseInt(cap), vers: vers ? parseInt(vers) : null, versEnd: versEnd ? parseInt(versEnd) : null };
+}
+
 async function buscarPorReferencia() {
-  const ref=document.getElementById('bibliaRef').value.trim(); if(!ref)return;
-  const el=document.getElementById('bibliaResultado'); el.innerHTML='<div class="bible-loading">Buscando…</div>';
+  const ref = document.getElementById('bibliaRef').value.trim(); if (!ref) return;
+  const el = document.getElementById('bibliaResultado');
+  el.innerHTML = '<div class="bible-loading">Buscando…</div>';
+  await iniciarMapaNomes();
+  const parsed = parsearRefLocal(ref);
+  if (!parsed) { el.innerHTML = '<div class="bible-error">Referência não reconhecida. Ex: João 3:16 ou Sl 23</div>'; return; }
   try {
-    const res=await fetch(`${BIBLE_API}/${encodeURIComponent(ref.replace(/ /g,'+'))}?translation=almeida`);
-    const data=await res.json();
-    if(data.error||!data.verses?.length){el.innerHTML='<div class="bible-error">Não encontrado. Tente: João 3:16</div>';return;}
-    renderizarResultadoBiblia(data,ref);
-  } catch { el.innerHTML='<div class="bible-error">Erro de conexão.</div>'; }
+    const biblia = await carregarBibliaJSON();
+    const livroData = biblia[parsed.slug];
+    if (!livroData) { el.innerHTML = '<div class="bible-error">Livro não encontrado.</div>'; return; }
+    const cap = livroData.caps[parsed.cap - 1];
+    if (!cap) { el.innerHTML = '<div class="bible-error">Capítulo não encontrado.</div>'; return; }
+    let verses;
+    if (parsed.vers) {
+      const fim = parsed.versEnd || parsed.vers;
+      verses = cap.slice(parsed.vers - 1, fim).map((t, i) => ({ verse: parsed.vers + i, text: t, slug: parsed.slug, cap: parsed.cap, nome: livroData.nome }));
+    } else {
+      verses = cap.map((t, i) => ({ verse: i + 1, text: t, slug: parsed.slug, cap: parsed.cap, nome: livroData.nome }));
+    }
+    const refLabel = `${livroData.nome} ${parsed.cap}${parsed.vers ? ':' + parsed.vers : ''}${parsed.versEnd ? '-' + parsed.versEnd : ''}`;
+    renderizarResultadoBiblia(verses, refLabel);
+  } catch { el.innerHTML = '<div class="bible-error">Erro ao buscar.</div>'; }
 }
+
 async function buscarPorPalavra() {
-  const palavra=document.getElementById('bibliaPalavra').value.trim(); if(!palavra)return;
-  const el=document.getElementById('bibliaResultado'); el.innerHTML='<div class="bible-loading">Buscando…</div>';
+  const palavra = document.getElementById('bibliaPalavra').value.trim().toLowerCase(); if (!palavra) return;
+  const el = document.getElementById('bibliaResultado');
+  el.innerHTML = '<div class="bible-loading">Buscando em todos os livros…</div>';
   try {
-    const res=await fetch(`${BIBLE_API}/?q=${encodeURIComponent(palavra)}&translation=almeida`);
-    const data=await res.json();
-    if(!data.verses?.length){el.innerHTML='<div class="bible-error">Nenhum resultado.</div>';return;}
-    renderizarResultadoBiblia(data,`"${palavra}"`);
-  } catch { el.innerHTML='<div class="bible-error">Erro de conexão.</div>'; }
+    const biblia = await carregarBibliaJSON();
+    const resultados = [];
+    for (const [slug, livro] of Object.entries(biblia)) {
+      for (let ci = 0; ci < livro.caps.length; ci++) {
+        for (let vi = 0; vi < livro.caps[ci].length; vi++) {
+          if (livro.caps[ci][vi].toLowerCase().includes(palavra)) {
+            resultados.push({ verse: vi + 1, text: livro.caps[ci][vi], slug, cap: ci + 1, nome: livro.nome });
+            if (resultados.length >= 30) break;
+          }
+        }
+        if (resultados.length >= 30) break;
+      }
+      if (resultados.length >= 30) break;
+    }
+    if (!resultados.length) { el.innerHTML = '<div class="bible-error">Nenhum resultado encontrado.</div>'; return; }
+    renderizarResultadoBiblia(resultados, `"${palavra}" — ${resultados.length} resultado${resultados.length>1?'s':''}`);
+  } catch { el.innerHTML = '<div class="bible-error">Erro ao buscar.</div>'; }
 }
-function renderizarResultadoBiblia(data,refOriginal) {
-  const verses=data.verses||[]; if(!verses.length){document.getElementById('bibliaResultado').innerHTML='<div class="bible-error">Sem resultados.</div>';return;}
-  document.getElementById('bibliaResultado').innerHTML=`<div class="bible-result"><div class="bible-result-ref">📖 ${data.reference||refOriginal}</div>${verses.map(v=>`<div class="bible-verse"><span class="bible-verse-num">${v.verse}</span><span class="bible-verse-text">${esc(v.text.trim())}</span><div class="bible-verse-actions"><button class="bible-verse-btn" onclick="prepararFavorito({ref:'${esc(v.book_name)} ${v.chapter}:${v.verse}',livro:'${esc(v.book_name.toLowerCase())}',cap:${v.chapter},vers:${v.verse},texto:'${esc(v.text.trim())}'})">⭐</button></div></div>`).join('')}</div>`;
+
+function renderizarResultadoBiblia(verses, refLabel) {
+  if (!verses.length) { document.getElementById('bibliaResultado').innerHTML = '<div class="bible-error">Sem resultados.</div>'; return; }
+  document.getElementById('bibliaResultado').innerHTML = `
+    <div class="bible-result">
+      <div class="bible-result-ref">📖 ${esc(refLabel)}</div>
+      ${verses.map(v => `
+        <div class="bible-verse">
+          <span class="bible-verse-num">${v.nome ? `<span style="font-size:9px;display:block;color:var(--accent)">${esc(v.nome)} ${v.cap}</span>` : ''}${v.verse}</span>
+          <span class="bible-verse-text">${esc(v.text)}</span>
+          <div class="bible-verse-actions">
+            <button class="bible-verse-btn" onclick="prepararFavorito({ref:'${esc((v.nome||'') + ' ' + v.cap + ':' + v.verse)}',livro:'${v.slug||''}',cap:${v.cap},vers:${v.verse},texto:'${esc(v.text)}'})">⭐</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
 }
 
 // Modais
