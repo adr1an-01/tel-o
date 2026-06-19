@@ -282,30 +282,49 @@ function irCapAnterior(){if(capAtual>1) abrirCapitulo(capAtual-1);}
 function irCapProximo(){if(capAtual<totalCapsAtual) abrirCapitulo(capAtual+1);}
 
 // ── Renderizar versículos ─────────────────────────────────────────────────
+// Usa data-verse e data-text em vez de onclick inline — compatível com Safari iOS
+let _versesCache = []; // cache dos verses para o handler de delegação
+
 function renderizarVersiculos(verses) {
-  const lista=document.getElementById('versiculosList');
-  lista.innerHTML=verses.map(v=>{
-    const temNota=anotacoesLivro.versiculos.some(a=>a.capitulo==capAtual&&a.versiculo==v.verse);
-    const cor=grifos[chaveGrifo(livroAtual.slug,capAtual,v.verse)]||'';
-    const badges=[];
-    if(temNota) badges.push(`<span class="verse-nota-badge">📝 Anotado</span>`);
-    if(cor) badges.push(`<span class="verse-grifo-badge" style="background:${GRIFO_HEX[cor]}22;color:${GRIFO_HEX[cor]}">● ${cor}</span>`);
-    return `<div class="verse-item ${temNota?'has-nota':''} ${cor?'grifo-'+cor:''}" id="verse-${v.verse}"
-         onclick="abrirModalVerso(${v.verse},${JSON.stringify(v.text.trim())})">
+  _versesCache = verses;
+  const lista = document.getElementById('versiculosList');
+  lista.innerHTML = verses.map(v => {
+    const temNota = anotacoesLivro.versiculos.some(a => a.capitulo == capAtual && a.versiculo == v.verse);
+    const cor = grifos[chaveGrifo(livroAtual.slug, capAtual, v.verse)] || '';
+    const badges = [];
+    if (temNota) badges.push(`<span class="verse-nota-badge">📝 Anotado</span>`);
+    if (cor) badges.push(`<span class="verse-grifo-badge" style="background:${GRIFO_HEX[cor]}22;color:${GRIFO_HEX[cor]}">● ${cor}</span>`);
+    // Guarda o número do versículo em data-verse; o texto é buscado do cache
+    return `<div class="verse-item ${temNota ? 'has-nota' : ''} ${cor ? 'grifo-' + cor : ''}" id="verse-${v.verse}" data-verse="${v.verse}">
       <span class="verse-num">${v.verse}</span>
       <div class="verse-body">
         <div class="verse-text">${esc(v.text.trim())}</div>
-        ${badges.length?`<div class="verse-badges">${badges.join('')}</div>`:''}
+        ${badges.length ? `<div class="verse-badges">${badges.join('')}</div>` : ''}
       </div>
     </div>`;
   }).join('');
+
+  // Delegação de evento no container — funciona em qualquer browser/iOS
+  lista.ontouchend = null;
+  lista.onclick = null;
+  const handler = (e) => {
+    const item = e.target.closest('.verse-item[data-verse]');
+    if (!item) return;
+    e.preventDefault();
+    const verseNum = parseInt(item.dataset.verse);
+    const verseObj = _versesCache.find(v => v.verse === verseNum);
+    if (verseObj) abrirModalVerso(verseNum, verseObj.text.trim());
+  };
+  lista.addEventListener('click', handler);
+  lista.addEventListener('touchend', handler, { passive: false });
+
   // Preview de notas
-  anotacoesLivro.versiculos.filter(a=>a.capitulo==capAtual).forEach(async a=>{
-    try{
-      const res=await post({acao:'buscar_anotacao_versiculo',livro:livroAtual.slug,capitulo:capAtual,versiculo:a.versiculo});
-      const badge=document.querySelector(`#verse-${a.versiculo} .verse-nota-badge`);
-      if(badge&&res.texto) badge.textContent='📝 '+res.texto.substring(0,50)+(res.texto.length>50?'…':'');
-    }catch{}
+  anotacoesLivro.versiculos.filter(a => a.capitulo == capAtual).forEach(async a => {
+    try {
+      const res = await post({ acao: 'buscar_anotacao_versiculo', livro: livroAtual.slug, capitulo: capAtual, versiculo: a.versiculo });
+      const badge = document.querySelector(`#verse-${a.versiculo} .verse-nota-badge`);
+      if (badge && res.texto) badge.textContent = '📝 ' + res.texto.substring(0, 50) + (res.texto.length > 50 ? '…' : '');
+    } catch {}
   });
 }
 

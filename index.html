@@ -33,7 +33,11 @@
 <!-- APP -->
 <div class="layout" id="appLayout" style="display:none">
   <aside class="sidebar">
-    <div class="logo"><span class="logo-icon">✦</span><span class="logo-text">Central</span></div>
+    <!-- Header próprio com logo — alinhado com o topo do conteúdo -->
+    <div class="sidebar-header">
+      <span class="logo-icon">✦</span>
+      <span class="logo-text">Central</span>
+    </div>
     <nav class="nav">
       <button class="nav-item" data-tab="biblia"><span class="nav-icon">📖</span><span>Bíblia</span></button>
       <button class="nav-item active" data-tab="dashboard"><span class="nav-icon">⚡</span><span>Dashboard</span></button>
@@ -365,11 +369,11 @@
 
 <!-- ══ BOTTOM NAV ══════════════════════════════════════════════════════════ -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
-  <button class="bottom-nav-item" data-tab="biblia">📖<span>Bíblia</span></button>
-  <button class="bottom-nav-item active" data-tab="dashboard">⚡<span>Home</span></button>
-  <button class="bottom-nav-item" data-tab="calendario">📅<span>Agenda</span></button>
-  <button class="bottom-nav-item" data-tab="servos">👥<span>Servos</span></button>
-  <button class="bottom-nav-item" data-tab="config">⚙️<span>Config</span></button>
+  <button class="bottom-nav-item" data-tab="biblia"><span class="nav-icon">📖</span><span>Bíblia</span></button>
+  <button class="bottom-nav-item active" data-tab="dashboard"><span class="nav-icon">⚡</span><span>Home</span></button>
+  <button class="bottom-nav-item" data-tab="calendario"><span class="nav-icon">📅</span><span>Agenda</span></button>
+  <button class="bottom-nav-item" data-tab="servos"><span class="nav-icon">👥</span><span>Servos</span></button>
+  <button class="bottom-nav-item" data-tab="config"><span class="nav-icon">⚙️</span><span>Config</span></button>
 </nav>
 
 <script src="app.js"></script>

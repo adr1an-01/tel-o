@@ -1,4 +1,4 @@
-const CACHE = 'central-v7';
+const CACHE = 'central-v9';
 const ASSETS = ['/', '/style.css', '/app.js', '/manifest.json'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => caches.open(CACHE)).then(c => c.add(new Request('/biblia.json', {cache:'no-cache'})).catch(()=>{})));
