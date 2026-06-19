@@ -125,13 +125,18 @@
         <div class="panel-header"><h1>Bíblia — NVI</h1></div>
         <div class="bible-quick-search">
           <input type="text" id="bibliaRefQuick" placeholder="Buscar — Ex: João 3:16 ou palavra"/>
-          <button class="btn btn--primary" onclick="buscarRapido()">Buscar</button>
+          <button class="btn btn--primary" onclick="abrirBuscaRapida()">Buscar</button>
         </div>
         <div id="bibliaResultadoQuick"></div>
         <div class="bible-shortcuts">
           <button class="bible-shortcut" onclick="ativarTab('favoritos')">⭐ Favoritos</button>
           <button class="bible-shortcut" onclick="ativarTab('estudos')">📝 Estudos</button>
           <button class="bible-shortcut" onclick="ativarTab('busca')">🔍 Busca avançada</button>
+        </div>
+        <!-- Barra de voltar — visível nos painéis secundários -->
+        <div id="bibliaBackBar" style="display:none;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+          <button class="bible-back-btn" onclick="voltarParaLivros()">‹ Livros</button>
+          <span style="font-size:13px;color:var(--text-2)" id="bibliaBackLabel"></span>
         </div>
         <div class="bible-panel active" id="btab-livros">
           <div class="testament-label">Antigo Testamento</div>

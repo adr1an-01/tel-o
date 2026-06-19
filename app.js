@@ -273,9 +273,23 @@ function irParaEstudos(){irParaBiblia();ativarTab('estudos');carregarEstudos();}
 function irParaFavoritos(){irParaBiblia();ativarTab('favoritos');carregarFavoritos();}
 function abrirBuscaRapida(){abrirModal('modal-busca-rapida');setTimeout(()=>document.getElementById('buscaRapidaInput')?.focus(),100);}
 function ativarTab(tab){
+  // Garante nivel-livros visível, outros escondidos
+  const nl=document.getElementById('nivel-livros');if(nl)nl.style.display='block';
+  const nc=document.getElementById('nivel-capitulos');if(nc)nc.style.display='none';
+  const nv=document.getElementById('nivel-versiculos');if(nv)nv.style.display='none';
+  // Ativa painel correto
   document.querySelectorAll('.bible-panel').forEach(p=>p.classList.remove('active'));
   const panel=document.getElementById('btab-'+tab);if(panel)panel.classList.add('active');
+  // Botão voltar visível só nos secundários
+  const bb=document.getElementById('bibliaBackBar');
+  const labels={favoritos:'Favoritos',estudos:'Estudos',busca:'Busca avançada'};
+  if(bb){
+    bb.style.display=(tab==='livros')?'none':'flex';
+    const lbl=document.getElementById('bibliaBackLabel');
+    if(lbl)lbl.textContent=labels[tab]||'';
+  }
 }
+function voltarParaLivros(){ativarTab('livros');}
 
 // ── Setup Eventos ──────────────────────────────────────────────────────────
 function setupEventos(){
@@ -459,8 +473,57 @@ async function buscarPorReferencia(){const ref=document.getElementById('bibliaRe
 async function buscarPorPalavra(){const p=document.getElementById('bibliaPalavra').value.trim().toLowerCase();if(p)await _buscarPalavra(p,'bibliaResultado');}
 async function buscarRapido(){const inp=document.getElementById('bibliaRefQuick');if(!inp||!inp.value.trim())return;const ref=inp.value.trim();await iniciarMapaNomes();const parsed=parsearRefLocal(ref);if(parsed)await _buscarRef(ref,'bibliaResultadoQuick');else await _buscarPalavra(ref.toLowerCase(),'bibliaResultadoQuick');}
 async function executarBuscaRapida(){const inp=document.getElementById('buscaRapidaInput');if(!inp||!inp.value.trim())return;const ref=inp.value.trim();await iniciarMapaNomes();const parsed=parsearRefLocal(ref);if(parsed)await _buscarRef(ref,'buscaRapidaResultado');else await _buscarPalavra(ref.toLowerCase(),'buscaRapidaResultado');}
-function renderizarResultadoBiblia(verses,refLabel,elId='bibliaResultado'){const el=document.getElementById(elId);if(!el||!verses.length){if(el)el.innerHTML='<div class="bible-error">Sem resultados.</div>';return;}el.innerHTML=`<div class="bible-result"><div class="bible-result-ref">📖 ${esc(refLabel)}</div>${verses.map(v=>`<div class="bible-verse" onclick="abrirModalVersoBusca(${v.verse},${JSON.stringify(v.text)},'${esc(v.nome||'')}',${v.cap},'${v.slug||''}')"><span class="bible-verse-num">${v.nome?`<span style="font-size:9px;display:block;color:var(--accent)">${esc(v.nome)} ${v.cap}</span>`:''}${v.verse}</span><span class="bible-verse-text">${esc(v.text)}</span></div>`).join('')}</div>`;}
-function abrirModalVersoBusca(verse,texto,nomeL,cap,slug){if(!livroAtual||livroAtual.slug!==slug)livroAtual={slug,nome:nomeL,totalCaps:0};capAtual=cap;versoAtual={verse,texto};const ref=`${nomeL} ${cap}:${verse}`;document.getElementById('versoAcaoRef').textContent=ref;document.getElementById('versoAcaoTexto').textContent=texto;document.querySelectorAll('.grifo-swatch').forEach(s=>s.classList.remove('active'));abrirModal('modal-verso-acao');}
+function renderizarResultadoBiblia(verses,refLabel,elId='bibliaResultado'){
+  const el=document.getElementById(elId);if(!el||!verses.length){if(el)el.innerHTML='<div class="bible-error">Sem resultados.</div>';return;}
+  el.innerHTML=`<div class="bible-result">
+    <div class="bible-result-ref">📖 ${esc(refLabel)}</div>
+    ${verses.map(v=>`
+    <div class="bible-verse" onclick="irParaCapituloVersículo('${v.slug||''}','${esc(v.nome||'')}',${v.cap},${v.verse})">
+      <span class="bible-verse-num">
+        ${v.nome?`<span style="font-size:9px;display:block;color:var(--accent)">${esc(v.nome)} ${v.cap}</span>`:''}
+        ${v.verse}
+      </span>
+      <span class="bible-verse-text">${esc(v.text)}</span>
+      <span style="font-size:11px;color:var(--accent);flex-shrink:0;padding-top:4px">›</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+// Ao clicar em resultado de busca: abre o livro → capítulo → rola até o versículo
+async function irParaCapituloVersículo(slug,nome,cap,verse){
+  // Fecha modal de busca rápida se estiver aberto
+  fecharModal('modal-busca-rapida');
+  // Vai para a aba Bíblia
+  document.querySelectorAll('.nav-item,.bottom-nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('[data-tab="biblia"]').forEach(b=>b.classList.add('active'));
+  document.getElementById('tab-biblia').classList.add('active');
+  iniciarTimerLeitura();
+  // Abre o livro e capítulo
+  const totalCaps=BIBLIA_CAPS[slug]||1;
+  await abrirLivro(slug,nome,totalCaps);
+  await abrirCapitulo(cap);
+  // Rola até o versículo específico e destaca
+  setTimeout(()=>{
+    const el=document.getElementById(`verse-${verse}`);
+    if(el){
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.style.transition='background .3s';
+      el.style.background='var(--accent-dim)';
+      setTimeout(()=>el.style.background='',2000);
+    }
+  },400);
+}
+
+function abrirModalVersoBusca(verse,texto,nomeL,cap,slug){
+  if(!livroAtual||livroAtual.slug!==slug)livroAtual={slug,nome:nomeL,totalCaps:BIBLIA_CAPS[slug]||0};
+  capAtual=cap;versoAtual={verse,texto};
+  const ref=`${nomeL} ${cap}:${verse}`;
+  document.getElementById('versoAcaoRef').textContent=ref;
+  document.getElementById('versoAcaoTexto').textContent=texto;
+  document.querySelectorAll('.grifo-swatch').forEach(s=>s.classList.remove('active'));
+  abrirModal('modal-verso-acao');
+}
 
 // Modais
 function abrirModal(id){document.getElementById(id).classList.add('open');}
