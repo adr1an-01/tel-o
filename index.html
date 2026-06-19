@@ -32,12 +32,9 @@
 
 <!-- APP -->
 <div class="layout" id="appLayout" style="display:none">
-
-  <!-- SIDEBAR desktop -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <span class="logo-icon">✦</span>
-      <span class="logo-text">Central</span>
+      <span class="logo-icon">✦</span><span class="logo-text">Central</span>
     </div>
     <nav class="nav">
       <button class="nav-item active" data-tab="home"><span class="nav-icon">🌱</span><span>Home</span></button>
@@ -52,92 +49,89 @@
 
   <main class="main">
 
-    <!-- ══ HOME ═══════════════════════════════════════════════════════════ -->
+    <!-- ══ HOME — Layout C editorial ══════════════════════════════════════ -->
     <section class="tab-panel active" id="tab-home">
-      <!-- Saudação + streak -->
-      <div class="home-header">
-        <div>
-          <div class="home-greeting" id="homeGreeting">Bom dia 👋</div>
-          <div class="home-streak" id="homeStreak"></div>
-        </div>
-        <div class="home-streak-badge" id="homeStreakBadge"></div>
-      </div>
+      <div class="home-wrap">
 
-      <!-- Planta -->
-      <div class="plant-card">
-        <div class="plant-stage-label" id="plantStageLabel">Semente</div>
-        <div class="plant-svg-wrap" id="plantSvgWrap"></div>
-        <div class="plant-progress-wrap">
-          <div class="plant-progress-bar"><div class="plant-progress-fill" id="plantProgressFill"></div></div>
-          <div class="plant-progress-text" id="plantProgressText"></div>
-        </div>
-        <div class="plant-read-btn" id="plantReadBtn" onclick="marcarLeituraHoje()"></div>
-      </div>
+        <!-- Data + saudação -->
+        <div class="home-date" id="homeDate"></div>
+        <div class="home-greeting" id="homeGreeting"></div>
 
-      <!-- Ações rápidas -->
-      <div class="home-actions">
-        <div class="home-action-card" onclick="irParaBiblia()">
-          <span class="ha-icon">📖</span>
-          <span class="ha-label">Abrir Bíblia</span>
-        </div>
-        <div class="home-action-card" onclick="abrirBuscaRapida()">
-          <span class="ha-icon">🔍</span>
-          <span class="ha-label">Buscar</span>
-        </div>
-        <div class="home-action-card" onclick="irParaEstudos()">
-          <span class="ha-icon">📝</span>
-          <span class="ha-label">Estudos</span>
-        </div>
-        <div class="home-action-card" onclick="irParaFavoritos()">
-          <span class="ha-icon">⭐</span>
-          <span class="ha-label">Favoritos</span>
-        </div>
-      </div>
+        <!-- Streak pill -->
+        <div class="streak-pill" id="streakPill"></div>
 
-      <!-- Versículo do dia -->
-      <div class="vod-card" id="vodCard">
-        <div class="vod-label">✦ Versículo do dia</div>
-        <div class="vod-text" id="vodText"></div>
-        <div class="vod-ref" id="vodRef"></div>
-      </div>
+        <!-- Divisor -->
+        <div class="home-divider"></div>
 
-      <!-- Plano de leitura -->
-      <div class="plan-section">
-        <div class="plan-header">
-          <h2 class="section-title">Plano de Leitura</h2>
-          <button class="btn btn--ghost btn--sm" onclick="abrirModalPlano()">⚙ Alterar</button>
+        <!-- Versículo do dia — elemento principal -->
+        <div class="vod-section">
+          <div class="vod-eyebrow">✦ versículo do dia</div>
+          <div class="vod-quote" id="vodText"></div>
+          <div class="vod-ref" id="vodRef"></div>
         </div>
-        <div id="planContent"></div>
+
+        <div class="home-divider"></div>
+
+        <!-- Planta em linha discreta -->
+        <div class="plant-row">
+          <div class="plant-emoji-wrap" id="plantEmoji">🌱</div>
+          <div class="plant-info">
+            <div class="plant-info-top">
+              <span class="plant-stage-name" id="plantStageName">Semente</span>
+              <span class="plant-days-label" id="plantDaysLabel"></span>
+            </div>
+            <div class="plant-mini-bar">
+              <div class="plant-mini-fill" id="plantMiniFill"></div>
+            </div>
+          </div>
+          <button class="plant-reg-btn" id="plantRegBtn" onclick="marcarLeituraHoje()"></button>
+        </div>
+
+        <div class="home-divider"></div>
+
+        <!-- Ações 2x2 -->
+        <div class="home-actions">
+          <div class="home-action" onclick="irParaBiblia()"><span>📖</span><span>Bíblia</span></div>
+          <div class="home-action" onclick="abrirBuscaRapida()"><span>🔍</span><span>Buscar</span></div>
+          <div class="home-action" onclick="irParaEstudos()"><span>📝</span><span>Estudos</span></div>
+          <div class="home-action" onclick="irParaFavoritos()"><span>⭐</span><span>Favoritos</span></div>
+        </div>
+
+        <div class="home-divider"></div>
+
+        <!-- Plano de leitura -->
+        <div class="plan-section">
+          <div class="plan-section-head">
+            <span class="plan-eyebrow">plano de leitura</span>
+            <button class="plan-change-btn" onclick="abrirModalPlano()">⚙ Alterar</button>
+          </div>
+          <div id="planContent"></div>
+        </div>
+
+        <!-- Conquistas -->
+        <div class="home-divider"></div>
+        <div class="conquistas-section">
+          <div class="plan-eyebrow" style="margin-bottom:12px">conquistas</div>
+          <div class="conquistas-grid" id="conquistasGrid"></div>
+        </div>
+
       </div>
     </section>
 
     <!-- ══ BÍBLIA ══════════════════════════════════════════════════════════ -->
     <section class="tab-panel" id="tab-biblia">
 
-      <!-- Nível 1: Livros -->
       <div id="nivel-livros">
         <div class="panel-header"><h1>Bíblia — NVI</h1></div>
-
-        <!-- Busca sempre visível no topo -->
         <div class="bible-quick-search">
-          <input type="text" id="bibliaRefQuick" placeholder="Buscar versículo — Ex: João 3:16" inputmode="text"/>
+          <input type="text" id="bibliaRefQuick" placeholder="Buscar — Ex: João 3:16 ou palavra"/>
           <button class="btn btn--primary" onclick="buscarRapido()">Buscar</button>
         </div>
         <div id="bibliaResultadoQuick"></div>
-
-        <!-- Atalhos rápidos -->
         <div class="bible-shortcuts">
           <button class="bible-shortcut" onclick="ativarTab('favoritos')">⭐ Favoritos</button>
           <button class="bible-shortcut" onclick="ativarTab('estudos')">📝 Estudos</button>
           <button class="bible-shortcut" onclick="ativarTab('busca')">🔍 Busca avançada</button>
-        </div>
-
-        <!-- Painéis -->
-        <div class="bible-tabs" style="display:none">
-          <button class="bible-tab active" data-btab="livros">Livros</button>
-          <button class="bible-tab" data-btab="busca">Busca</button>
-          <button class="bible-tab" data-btab="favoritos">Favoritos</button>
-          <button class="bible-tab" data-btab="estudos">Estudos</button>
         </div>
         <div class="bible-panel active" id="btab-livros">
           <div class="testament-label">Antigo Testamento</div>
@@ -147,14 +141,8 @@
         </div>
         <div class="bible-panel" id="btab-busca">
           <div class="bible-search-box">
-            <div class="bible-search-row">
-              <input type="text" id="bibliaRef" placeholder="Ex: João 3:16 ou João 3:1-10"/>
-              <button class="btn btn--primary" onclick="buscarPorReferencia()">Buscar</button>
-            </div>
-            <div class="bible-search-row">
-              <input type="text" id="bibliaPalavra" placeholder="Buscar por palavra-chave…"/>
-              <button class="btn btn--ghost" onclick="buscarPorPalavra()">Buscar</button>
-            </div>
+            <div class="bible-search-row"><input type="text" id="bibliaRef" placeholder="Ex: João 3:16"/><button class="btn btn--primary" onclick="buscarPorReferencia()">Buscar</button></div>
+            <div class="bible-search-row"><input type="text" id="bibliaPalavra" placeholder="Palavra-chave…"/><button class="btn btn--ghost" onclick="buscarPorPalavra()">Buscar</button></div>
           </div>
           <div id="bibliaResultado"></div>
         </div>
@@ -172,7 +160,6 @@
         </div>
       </div>
 
-      <!-- Nível 2: Capítulos -->
       <div id="nivel-capitulos" style="display:none">
         <div class="bible-nav-header">
           <button class="bible-back-btn" onclick="voltarLivros()">‹ Livros</button>
@@ -189,14 +176,25 @@
         <div class="chapters-grid" id="chaptersGrid"></div>
       </div>
 
-      <!-- Nível 3: Versículos -->
       <div id="nivel-versiculos" style="display:none">
         <div class="bible-nav-header">
           <button class="bible-back-btn" onclick="voltarCapitulos()">‹ Caps</button>
           <span id="capAtualTitulo"></span>
-          <div style="display:flex;gap:6px">
+          <div style="display:flex;gap:6px;align-items:center">
+            <!-- Botão contexto histórico -->
+            <button class="btn-contexto" id="btnContexto" onclick="abrirContexto()" title="Contexto histórico">ℹ</button>
             <button class="btn-chap-nav" id="btnCapPrev" onclick="irCapAnterior()">‹</button>
             <button class="btn-chap-nav" id="btnCapNext" onclick="irCapProximo()">›</button>
+          </div>
+        </div>
+        <!-- Painel de contexto histórico (colapsável) -->
+        <div class="contexto-panel" id="contextoPanel" style="display:none">
+          <div class="contexto-header">
+            <span class="contexto-title">Contexto histórico</span>
+            <button class="contexto-close" onclick="fecharContexto()">✕</button>
+          </div>
+          <div class="contexto-body" id="contextoBody">
+            <div class="contexto-loading">Gerando contexto com IA…</div>
           </div>
         </div>
         <div class="bible-cap-nota">
@@ -215,6 +213,18 @@
     <section class="tab-panel" id="tab-config">
       <div class="panel-header"><h1>Configurações</h1></div>
       <div class="settings-section">
+        <div class="settings-section-title">Notificações</div>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Lembrete diário</div>
+              <div style="font-size:12px;color:var(--text-2);margin-top:2px">Avisa às 20h se você ainda não leu</div>
+            </div>
+            <button class="toggle-btn" id="toggleNotif" onclick="toggleNotificacoes()">Ativar</button>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
         <div class="settings-section-title">Leitura</div>
         <div class="settings-card">
           <div class="setting-row">
@@ -228,13 +238,13 @@
           <div class="setting-row">
             <span class="setting-label">Família da fonte</span>
             <div class="setting-control">
-              <button class="font-toggle-btn active" id="btnSerif" onclick="setFontFamily('serif')">Lora (Serif)</button>
-              <button class="font-toggle-btn" id="btnSans" onclick="setFontFamily('sans')">Inter (Sans)</button>
+              <button class="font-toggle-btn active" id="btnSerif" onclick="setFontFamily('serif')">Lora Serif</button>
+              <button class="font-toggle-btn" id="btnSans" onclick="setFontFamily('sans')">Inter Sans</button>
             </div>
           </div>
           <div class="setting-row">
-            <span class="setting-label">Fundo de leitura</span>
-            <div class="setting-control" style="gap:8px">
+            <span class="setting-label">Fundo</span>
+            <div class="setting-control" style="gap:6px;flex-wrap:wrap">
               <button class="bg-btn active" id="bgDark"  onclick="setReadingBg('dark')"  style="background:#07090f;color:#dde3f5;border:2px solid transparent">Escuro</button>
               <button class="bg-btn" id="bgBlack" onclick="setReadingBg('black')" style="background:#000;color:#eee;border:2px solid transparent">Preto</button>
               <button class="bg-btn" id="bgSepia" onclick="setReadingBg('sepia')" style="background:#f5efe0;color:#3b2e1a;border:2px solid transparent">Sépia</button>
@@ -256,13 +266,13 @@
       <div class="settings-section">
         <div class="settings-section-title">Cor de destaque</div>
         <div class="settings-card">
-          <div class="accent-palette" id="accentPalette">
-            <div class="accent-swatch active" data-accent="indigo"  style="background:#5b7fff">✓</div>
-            <div class="accent-swatch" data-accent="purple"  style="background:#a855f7"></div>
-            <div class="accent-swatch" data-accent="blue"    style="background:#3b9eff"></div>
-            <div class="accent-swatch" data-accent="green"   style="background:#22c47a"></div>
-            <div class="accent-swatch" data-accent="orange"  style="background:#ff8c3b"></div>
-            <div class="accent-swatch" data-accent="rose"    style="background:#f0527a"></div>
+          <div class="accent-palette">
+            <div class="accent-swatch active" data-accent="indigo" style="background:#5b7fff">✓</div>
+            <div class="accent-swatch" data-accent="purple" style="background:#a855f7"></div>
+            <div class="accent-swatch" data-accent="blue" style="background:#3b9eff"></div>
+            <div class="accent-swatch" data-accent="green" style="background:#22c47a"></div>
+            <div class="accent-swatch" data-accent="orange" style="background:#ff8c3b"></div>
+            <div class="accent-swatch" data-accent="rose" style="background:#f0527a"></div>
           </div>
           <div class="settings-preview">
             <div class="settings-preview-dot"></div>
@@ -276,26 +286,19 @@
         <div class="settings-card">
           <div style="display:flex;align-items:center;gap:12px">
             <div style="font-size:32px">👤</div>
-            <div>
-              <div id="configUsuario" style="font-weight:600;font-size:14px"></div>
-              <div style="font-size:12px;color:var(--text-2);margin-top:2px">Administrador</div>
-            </div>
+            <div><div id="configUsuario" style="font-weight:600;font-size:14px"></div><div style="font-size:12px;color:var(--text-2);margin-top:2px">Administrador</div></div>
             <button class="btn btn--ghost" style="margin-left:auto" onclick="fazerLogout()">Sair</button>
           </div>
         </div>
       </div>
     </section>
-
   </main>
 </div>
 
-<!-- MODAL: AÇÃO DO VERSÍCULO -->
+<!-- MODAL: ação versículo -->
 <div class="modal-overlay" id="modal-verso-acao">
   <div class="modal">
-    <div class="modal-header">
-      <h2 id="versoAcaoRef">Versículo</h2>
-      <button class="modal-close" onclick="fecharModal('modal-verso-acao')">✕</button>
-    </div>
+    <div class="modal-header"><h2 id="versoAcaoRef">Versículo</h2><button class="modal-close" onclick="fecharModal('modal-verso-acao')">✕</button></div>
     <div class="modal-body">
       <div class="verse-modal-preview" id="versoAcaoTexto"></div>
       <div class="verse-action-grid">
@@ -305,7 +308,7 @@
         <div class="verse-action-card" onclick="acaoVerso('compartilhar')"><span class="icon">🔗</span>Compartilhar</div>
       </div>
       <div style="margin-top:16px">
-        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Grifo de cor</div>
+        <div class="grifo-label">Grifo de cor</div>
         <div class="grifo-grid">
           <div class="grifo-swatch" data-cor="amarelo" style="background:rgba(251,191,36,.25)" onclick="aplicarGrifo('amarelo')">🟡</div>
           <div class="grifo-swatch" data-cor="verde"   style="background:rgba(45,212,160,.25)" onclick="aplicarGrifo('verde')">🟢</div>
@@ -318,7 +321,7 @@
   </div>
 </div>
 
-<!-- MODAL: ANOTAÇÃO -->
+<!-- MODAL: anotação -->
 <div class="modal-overlay" id="modal-anotacao-verso">
   <div class="modal">
     <div class="modal-header"><h2>Anotação</h2><button class="modal-close" onclick="fecharModal('modal-anotacao-verso')">✕</button></div>
@@ -333,19 +336,13 @@
   </div>
 </div>
 
-<!-- MODAL: FAVORITO -->
+<!-- MODAL: favorito -->
 <div class="modal-overlay" id="modal-favorito">
   <div class="modal">
     <div class="modal-header"><h2>Adicionar aos Favoritos</h2><button class="modal-close" onclick="fecharModal('modal-favorito')">✕</button></div>
     <div class="modal-body">
       <div class="bible-verse-preview" id="favoritoPreview"></div>
-      <label>Categoria
-        <select id="favoritoCategoria">
-          <option value="geral">Geral</option><option value="pregacao">Pregação</option>
-          <option value="estudo">Estudo</option><option value="devocional">Devocional</option>
-          <option value="promessa">Promessa</option>
-        </select>
-      </label>
+      <label>Categoria<select id="favoritoCategoria"><option value="geral">Geral</option><option value="pregacao">Pregação</option><option value="estudo">Estudo</option><option value="devocional">Devocional</option><option value="promessa">Promessa</option></select></label>
       <label>Anotação<textarea id="favoritoAnotacao" rows="3" placeholder="Opcional…"></textarea></label>
     </div>
     <div class="modal-footer">
@@ -355,7 +352,7 @@
   </div>
 </div>
 
-<!-- MODAL: ESTUDO -->
+<!-- MODAL: estudo -->
 <div class="modal-overlay" id="modal-estudo">
   <div class="modal modal--wide">
     <div class="modal-header"><h2 id="modalEstudoTitulo">Novo Estudo</h2><button class="modal-close" onclick="fecharModal('modal-estudo')">✕</button></div>
@@ -363,13 +360,7 @@
       <label>Título<input type="text" id="est-titulo" placeholder="Título do estudo"/></label>
       <label>Versículo base<input type="text" id="est-versiculo" placeholder="Ex: João 3:16"/></label>
       <label>Texto base<textarea id="est-texto-base" rows="2" placeholder="Cole o versículo aqui…"></textarea></label>
-      <label>Categoria
-        <select id="est-categoria">
-          <option value="geral">Geral</option><option value="pregacao">Pregação</option>
-          <option value="estudo">Estudo Bíblico</option><option value="devocional">Devocional</option>
-          <option value="celula">Célula</option>
-        </select>
-      </label>
+      <label>Categoria<select id="est-categoria"><option value="geral">Geral</option><option value="pregacao">Pregação</option><option value="estudo">Estudo Bíblico</option><option value="devocional">Devocional</option><option value="celula">Célula</option></select></label>
       <label>Conteúdo<textarea id="est-conteudo" rows="8" placeholder="Pontos principais, observações…"></textarea></label>
     </div>
     <div class="modal-footer">
@@ -379,18 +370,14 @@
   </div>
 </div>
 
-<!-- MODAL: PLANO DE LEITURA -->
+<!-- MODAL: plano de leitura -->
 <div class="modal-overlay" id="modal-plano">
   <div class="modal">
     <div class="modal-header"><h2>Plano de Leitura</h2><button class="modal-close" onclick="fecharModal('modal-plano')">✕</button></div>
     <div class="modal-body">
-      <label>Livro
-        <select id="planoLivro" onchange="calcularRitmoSugerido()"></select>
-      </label>
+      <label>Livro<select id="planoLivro" onchange="calcularRitmoSugerido()"></select></label>
       <div class="plano-ritmo-info" id="planoRitmoInfo"></div>
-      <label>Capítulos por dia
-        <input type="number" id="planoCapsPerDay" min="1" max="10" value="2"/>
-      </label>
+      <label>Capítulos por dia<input type="number" id="planoCapsPerDay" min="1" max="10" value="2"/></label>
     </div>
     <div class="modal-footer">
       <button class="btn btn--ghost" onclick="fecharModal('modal-plano')">Cancelar</button>
@@ -399,33 +386,28 @@
   </div>
 </div>
 
-<!-- MODAL: BUSCA RÁPIDA -->
+<!-- MODAL: busca rápida -->
 <div class="modal-overlay" id="modal-busca-rapida">
   <div class="modal">
     <div class="modal-header"><h2>Busca Rápida</h2><button class="modal-close" onclick="fecharModal('modal-busca-rapida')">✕</button></div>
     <div class="modal-body">
-      <div class="bible-search-row">
-        <input type="text" id="buscaRapidaInput" placeholder="João 3:16 ou palavra-chave…" autofocus/>
-        <button class="btn btn--primary" onclick="executarBuscaRapida()">Buscar</button>
-      </div>
+      <div class="bible-search-row"><input type="text" id="buscaRapidaInput" placeholder="João 3:16 ou palavra-chave…"/><button class="btn btn--primary" onclick="executarBuscaRapida()">Buscar</button></div>
       <div id="buscaRapidaResultado" style="margin-top:12px"></div>
     </div>
   </div>
 </div>
 
+<!-- Celebração confete -->
+<div class="confete-wrap" id="confeteWrap" style="display:none" onclick="this.style.display='none'">
+  <div class="confete-msg" id="confeteMsg"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- BOTTOM NAV mobile -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
-  <button class="bottom-nav-item active" data-tab="home">
-    <span class="nav-icon">🌱</span><span class="nav-label">Home</span>
-  </button>
-  <button class="bottom-nav-item" data-tab="biblia">
-    <span class="nav-icon">📖</span><span class="nav-label">Bíblia</span>
-  </button>
-  <button class="bottom-nav-item" data-tab="config">
-    <span class="nav-icon">⚙️</span><span class="nav-label">Config</span>
-  </button>
+  <button class="bottom-nav-item active" data-tab="home"><span class="nav-icon">🌱</span><span class="nav-label">Home</span></button>
+  <button class="bottom-nav-item" data-tab="biblia"><span class="nav-icon">📖</span><span class="nav-label">Bíblia</span></button>
+  <button class="bottom-nav-item" data-tab="config"><span class="nav-icon">⚙️</span><span class="nav-label">Config</span></button>
 </nav>
 
 <script src="app.js"></script>
