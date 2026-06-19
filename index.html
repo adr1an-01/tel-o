@@ -108,9 +108,12 @@
       </div>
       <div id="nivel-versiculos" style="display:none">
         <div class="bible-nav-header">
-          <button class="bible-back-btn" onclick="voltarCapitulos()">‹ Capítulos</button>
+          <button class="bible-back-btn" onclick="voltarCapitulos()">‹ Caps</button>
           <span id="capAtualTitulo"></span>
-          <span></span>
+          <div class="bible-chapter-nav">
+            <button class="btn-chap-nav" id="btnCapPrev" onclick="irCapAnterior()" title="Capítulo anterior">‹</button>
+            <button class="btn-chap-nav" id="btnCapNext" onclick="irCapProximo()" title="Próximo capítulo">›</button>
+          </div>
         </div>
         <div class="bible-cap-nota" id="verseCapNotaArea">
           <div class="bible-cap-nota-toggle" onclick="toggleNotaCapituloVerses()">📓 Nota do capítulo <span id="verseCapNotaIcon">▼</span></div>
@@ -251,6 +254,16 @@
         </div>
         <div class="verse-action-card" onclick="acaoVerso('compartilhar')">
           <span class="icon">🔗</span>Compartilhar
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Grifo</div>
+        <div class="grifo-grid">
+          <div class="grifo-swatch" data-cor="amarelo" style="background:rgba(251,191,36,.2);border-color:transparent" onclick="aplicarGrifo('amarelo')" title="Amarelo">🟡</div>
+          <div class="grifo-swatch" data-cor="verde"   style="background:rgba(45,212,160,.2);border-color:transparent" onclick="aplicarGrifo('verde')"   title="Verde">🟢</div>
+          <div class="grifo-swatch" data-cor="rosa"    style="background:rgba(244,114,182,.2);border-color:transparent" onclick="aplicarGrifo('rosa')"    title="Rosa">🩷</div>
+          <div class="grifo-swatch" data-cor="azul"    style="background:rgba(56,189,248,.2);border-color:transparent" onclick="aplicarGrifo('azul')"    title="Azul">🔵</div>
+          <div class="grifo-swatch remover" data-cor="remover" onclick="aplicarGrifo('remover')" title="Remover grifo">✕</div>
         </div>
       </div>
     </div>
