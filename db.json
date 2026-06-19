@@ -1,0 +1,25 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "usuario": "testagent",
+      "nome": "Teste Antigravity",
+      "email": "test@agent.com",
+      "senha": "5751a44782594819e4cb8aa27c2c9d87a420af82bc6a5a05bc7f19c3bb00452b",
+      "criado_em": "2026-06-19T14:02:06.763Z"
+    }
+  ],
+  "tokens": [
+    {
+      "id": 1,
+      "usuario_id": 1,
+      "usuario": "testagent",
+      "token": "a35d7c4dd018aa44505d6fead549cfb40b318274a9ba178b7761e902295270a2",
+      "criado_em": "2026-06-19T14:02:06.764Z"
+    }
+  ],
+  "favoritos": [],
+  "anotacoes_versiculo": [],
+  "anotacoes_capitulo": [],
+  "estudos": []
+}

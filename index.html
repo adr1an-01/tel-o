@@ -16,16 +16,108 @@
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo"><span class="login-logo-icon">✦</span><span>Central de Controle</span></div>
-    <p class="login-sub">Acesso restrito à equipe</p>
-    <div class="login-form">
-      <label>Usuário<input type="text" id="loginUser" placeholder="admin" autocomplete="username"/></label>
-      <label>Senha<input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"/></label>
-      <div class="login-error" id="loginError"></div>
-      <button class="btn btn--primary btn--full" onclick="fazerLogin()">Entrar</button>
+<!-- AUTH SCREENS -->
+<div class="auth-screen" id="loginScreen">
+  <!-- Background decoration -->
+  <div class="auth-bg">
+    <div class="auth-orb auth-orb--1"></div>
+    <div class="auth-orb auth-orb--2"></div>
+    <div class="auth-orb auth-orb--3"></div>
+  </div>
+
+  <!-- Login Panel -->
+  <div class="auth-card" id="authCardLogin">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">✦</div>
+      <div class="auth-logo-text">
+        <span class="auth-logo-name">Central de Controle</span>
+        <span class="auth-logo-tagline">Sua jornada na Palavra</span>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLoginBtn" onclick="mostrarPainel('login')">Entrar</button>
+      <button class="auth-tab" id="tabRegisterBtn" onclick="mostrarPainel('cadastro')">Criar conta</button>
+      <div class="auth-tab-indicator" id="authTabIndicator"></div>
+    </div>
+
+    <!-- Login form -->
+    <div id="painelLogin" class="auth-form-panel">
+      <div class="auth-field">
+        <label class="auth-label" for="loginUser">Usuário ou e-mail</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">👤</span>
+          <input class="auth-input" type="text" id="loginUser" placeholder="seu_usuario" autocomplete="username"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="loginPass">Senha</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input class="auth-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('loginPass', this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <div class="auth-error" id="loginError"></div>
+      <button class="auth-submit-btn" id="loginSubmitBtn" onclick="fazerLogin()">
+        <span class="auth-submit-text">Entrar</span>
+        <span class="auth-submit-icon">→</span>
+      </button>
+      <p class="auth-switch-text">Não tem conta? <button class="auth-link-btn" onclick="mostrarPainel('cadastro')">Criar gratuitamente</button></p>
+    </div>
+
+    <!-- Register form -->
+    <div id="painelCadastro" class="auth-form-panel" style="display:none">
+      <div class="auth-field">
+        <label class="auth-label" for="regNome">Nome completo</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">✨</span>
+          <input class="auth-input" type="text" id="regNome" placeholder="Seu nome" autocomplete="name"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="regUsuario">Nome de usuário</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">@</span>
+          <input class="auth-input" type="text" id="regUsuario" placeholder="joao_silva" autocomplete="username"
+                 oninput="validarUsername(this)"/>
+        </div>
+        <div class="auth-field-hint" id="regUsernameHint"></div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="regEmail">E-mail <span class="auth-optional">(opcional)</span></label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">📧</span>
+          <input class="auth-input" type="email" id="regEmail" placeholder="voce@exemplo.com" autocomplete="email"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="regSenha">Senha</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input class="auth-input" type="password" id="regSenha" placeholder="Mín. 6 caracteres"
+                 autocomplete="new-password" oninput="avaliarSenha(this.value)"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('regSenha', this)" tabindex="-1">👁</button>
+        </div>
+        <div class="senha-strength" id="senhaStrength">
+          <div class="senha-bar"><div class="senha-bar-fill" id="senhaBarFill"></div></div>
+          <span class="senha-label" id="senhaLabel"></span>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="regSenha2">Confirmar senha</label>
+        <div class="auth-input-wrap">
+          <span class="auth-input-icon">🔒</span>
+          <input class="auth-input" type="password" id="regSenha2" placeholder="Repita a senha" autocomplete="new-password"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('regSenha2', this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <div class="auth-error" id="regError"></div>
+      <button class="auth-submit-btn auth-submit-btn--register" id="regSubmitBtn" onclick="fazerCadastro()">
+        <span class="auth-submit-text">Criar minha conta</span>
+        <span class="auth-submit-icon">✦</span>
+      </button>
+      <p class="auth-switch-text">Já tem conta? <button class="auth-link-btn" onclick="mostrarPainel('login')">Entrar</button></p>
     </div>
   </div>
 </div>
@@ -288,12 +380,28 @@
       </div>
       <div class="settings-section">
         <div class="settings-section-title">Conta</div>
-        <div class="settings-card">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="font-size:32px">👤</div>
-            <div><div id="configUsuario" style="font-weight:600;font-size:14px"></div><div style="font-size:12px;color:var(--text-2);margin-top:2px">Administrador</div></div>
-            <button class="btn btn--ghost" style="margin-left:auto" onclick="fazerLogout()">Sair</button>
+        <div class="settings-card" id="perfilCard">
+          <!-- Avatar + info -->
+          <div class="perfil-header">
+            <div class="perfil-avatar" id="perfilAvatar">?</div>
+            <div class="perfil-info">
+              <div class="perfil-nome" id="perfilNome">Carregando…</div>
+              <div class="perfil-usuario" id="perfilUsuarioLabel"></div>
+              <div class="perfil-email" id="perfilEmail"></div>
+            </div>
+            <button class="btn btn--ghost" style="margin-left:auto;flex-shrink:0" onclick="fazerLogout()">Sair</button>
           </div>
+          <!-- Ações -->
+          <div class="perfil-acoes">
+            <button class="perfil-acao-btn" onclick="abrirModal('modal-editar-perfil')">
+              <span>✏️</span> Editar perfil
+            </button>
+            <button class="perfil-acao-btn" onclick="abrirModal('modal-trocar-senha')">
+              <span>🔒</span> Trocar senha
+            </button>
+          </div>
+          <!-- Membro desde -->
+          <div class="perfil-since" id="perfilSince"></div>
         </div>
       </div>
     </section>
@@ -401,6 +509,55 @@
     </div>
   </div>
 </div>
+
+<!-- MODAL: editar perfil -->
+<div class="modal-overlay" id="modal-editar-perfil">
+  <div class="modal">
+    <div class="modal-header"><h2>Editar Perfil</h2><button class="modal-close" onclick="fecharModal('modal-editar-perfil')">✕</button></div>
+    <div class="modal-body">
+      <label>Nome completo<input type="text" id="editNome" placeholder="Seu nome"/></label>
+      <label>E-mail <span style="font-size:10px;color:var(--text-2)">(opcional)</span><input type="email" id="editEmail" placeholder="voce@exemplo.com"/></label>
+      <div class="auth-error" id="editPerfilError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-editar-perfil')">Cancelar</button>
+      <button class="btn btn--primary" onclick="salvarPerfil()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: trocar senha -->
+<div class="modal-overlay" id="modal-trocar-senha">
+  <div class="modal">
+    <div class="modal-header"><h2>Trocar Senha</h2><button class="modal-close" onclick="fecharModal('modal-trocar-senha')">✕</button></div>
+    <div class="modal-body">
+      <label>Senha atual
+        <div class="auth-input-wrap" style="margin-top:5px">
+          <input type="password" id="senhaAtual" placeholder="Senha atual" autocomplete="current-password"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('senhaAtual', this)" tabindex="-1">👁</button>
+        </div>
+      </label>
+      <label>Nova senha
+        <div class="auth-input-wrap" style="margin-top:5px">
+          <input type="password" id="senhaNova" placeholder="Mín. 6 caracteres" autocomplete="new-password"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('senhaNova', this)" tabindex="-1">👁</button>
+        </div>
+      </label>
+      <label>Confirmar nova senha
+        <div class="auth-input-wrap" style="margin-top:5px">
+          <input type="password" id="senhaNova2" placeholder="Repita a nova senha" autocomplete="new-password"/>
+          <button class="auth-eye-btn" type="button" onclick="toggleSenha('senhaNova2', this)" tabindex="-1">👁</button>
+        </div>
+      </label>
+      <div class="auth-error" id="trocarSenhaError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" onclick="fecharModal('modal-trocar-senha')">Cancelar</button>
+      <button class="btn btn--primary" onclick="trocarSenhaUsuario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Celebração confete -->
 <div class="confete-wrap" id="confeteWrap" style="display:none" onclick="this.style.display='none'">

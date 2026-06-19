@@ -222,32 +222,196 @@ document.addEventListener('DOMContentLoaded',async()=>{
   aplicarPreferencias();carregarGrifos();
   document.querySelectorAll('.accent-swatch').forEach(s=>s.addEventListener('click',()=>setAccent(s.dataset.accent)));
   const token=localStorage.getItem(TOKEN_KEY);
-  if(token){const auth=await postPublic({acao:'checar_auth'},token).catch(()=>({autenticado:false}));if(auth.autenticado){mostrarApp(auth.usuario);return;}localStorage.removeItem(TOKEN_KEY);}
+  if(token){
+    const auth=await postPublic({acao:'checar_auth'},token).catch(()=>({autenticado:false}));
+    if(auth.autenticado){mostrarApp(auth.usuario,auth.nome);return;}
+    localStorage.removeItem(TOKEN_KEY);
+  }
+  mostrarPainel('login');
   document.getElementById('loginScreen').style.display='flex';
-  ['loginPass','loginUser'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();}));
+  // Enter key support
+  ['loginPass','loginUser'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});});
+  ['regSenha','regSenha2','regNome','regUsuario','regEmail'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter')fazerCadastro();});});
 });
+
+// ── Auth UI helpers ────────────────────────────────────────────────────────
+function mostrarPainel(painel){
+  const isLogin=painel==='login';
+  document.getElementById('painelLogin').style.display=isLogin?'flex':'none';
+  document.getElementById('painelCadastro').style.display=isLogin?'none':'flex';
+  document.getElementById('tabLoginBtn').classList.toggle('active',isLogin);
+  document.getElementById('tabRegisterBtn').classList.toggle('active',!isLogin);
+  const ind=document.getElementById('authTabIndicator');
+  if(ind)ind.classList.toggle('right',!isLogin);
+  // Clear errors
+  ['loginError','regError'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='';});
+}
+function toggleSenha(inputId,btn){
+  const inp=document.getElementById(inputId);
+  if(!inp)return;
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.textContent=show?'🙈':'👁';
+}
+function validarUsername(inp){
+  const v=inp.value.trim();
+  const hint=document.getElementById('regUsernameHint');
+  if(!hint)return;
+  if(!v){hint.textContent='';hint.className='auth-field-hint';return;}
+  if(v.length<3){hint.textContent='Mín. 3 caracteres';hint.className='auth-field-hint err';return;}
+  if(!/^[a-zA-Z0-9._-]+$/.test(v)){hint.textContent='Só letras, números, . _ -';hint.className='auth-field-hint err';return;}
+  hint.textContent='✓ Usuário válido';hint.className='auth-field-hint ok';
+}
+function avaliarSenha(v){
+  const fill=document.getElementById('senhaBarFill'),lbl=document.getElementById('senhaLabel');
+  if(!fill||!lbl)return;
+  let score=0;
+  if(v.length>=6)score++;
+  if(v.length>=10)score++;
+  if(/[A-Z]/.test(v))score++;
+  if(/[0-9]/.test(v))score++;
+  if(/[^A-Za-z0-9]/.test(v))score++;
+  const levels=[
+    {pct:'20%',color:'#f25f5c',label:'Muito fraca'},
+    {pct:'40%',color:'#ff8c3b',label:'Fraca'},
+    {pct:'60%',color:'#f5a623',label:'Razoável'},
+    {pct:'80%',color:'#22c47a',label:'Boa'},
+    {pct:'100%',color:'#2dd4a0',label:'Excelente'},
+  ];
+  const lvl=levels[Math.max(0,score-1)]||levels[0];
+  fill.style.width=v.length?lvl.pct:'0%';
+  fill.style.background=lvl.color;
+  lbl.textContent=v.length?lvl.label:'';
+}
 
 // ── Auth ──────────────────────────────────────────────────────────────────
 async function fazerLogin(){
-  const usuario=document.getElementById('loginUser').value.trim(),senha=document.getElementById('loginPass').value,errEl=document.getElementById('loginError');
+  const usuario=document.getElementById('loginUser').value.trim();
+  const senha=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginError');
   errEl.textContent='';
-  try{const res=await postPublic({acao:'login',usuario,senha});if(res.sucesso){localStorage.setItem(TOKEN_KEY,res.token);mostrarApp(res.usuario);}else errEl.textContent=res.erro||'Erro ao entrar';}catch{errEl.textContent='Erro de conexão';}
+  const btn=document.getElementById('loginSubmitBtn');
+  btn.classList.add('loading');btn.querySelector('.auth-submit-text').textContent='Entrando…';
+  try{
+    const res=await postPublic({acao:'login',usuario,senha});
+    if(res.sucesso){
+      localStorage.setItem(TOKEN_KEY,res.token);
+      mostrarApp(res.usuario,res.nome);
+    } else {
+      errEl.textContent=res.erro||'Usuário ou senha incorretos';
+    }
+  } catch{
+    errEl.textContent='Erro de conexão. Tente novamente.';
+  } finally{
+    btn.classList.remove('loading');btn.querySelector('.auth-submit-text').textContent='Entrar';
+  }
+}
+async function fazerCadastro(){
+  const nome=document.getElementById('regNome').value.trim();
+  const usuario=document.getElementById('regUsuario').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const senha=document.getElementById('regSenha').value;
+  const senha2=document.getElementById('regSenha2').value;
+  const errEl=document.getElementById('regError');
+  errEl.textContent='';
+  if(!nome){errEl.textContent='Informe seu nome.';return;}
+  if(usuario.length<3){errEl.textContent='Usuário precisa ter ao menos 3 caracteres.';return;}
+  if(senha.length<6){errEl.textContent='Senha precisa ter ao menos 6 caracteres.';return;}
+  if(senha!==senha2){errEl.textContent='As senhas não coincidem.';return;}
+  const btn=document.getElementById('regSubmitBtn');
+  btn.classList.add('loading');btn.querySelector('.auth-submit-text').textContent='Criando conta…';
+  try{
+    const res=await postPublic({acao:'registrar',nome,usuario,email:email||null,senha});
+    if(res.sucesso){
+      localStorage.setItem(TOKEN_KEY,res.token);
+      mostrarApp(res.usuario,res.nome);
+      toast('Conta criada! Bem-vindo(a), '+res.nome.split(' ')[0]+' 🎉','ok');
+    } else {
+      errEl.textContent=res.erro||'Erro ao criar conta.';
+    }
+  } catch{
+    errEl.textContent='Erro de conexão. Tente novamente.';
+  } finally{
+    btn.classList.remove('loading');btn.querySelector('.auth-submit-text').textContent='Criar minha conta';
+  }
 }
 async function fazerLogout(){
-  const token=localStorage.getItem(TOKEN_KEY);if(token)await postPublic({acao:'logout'},token).catch(()=>{});
-  localStorage.removeItem(TOKEN_KEY);pararTimerLeitura();
-  document.getElementById('appLayout').style.display='none';document.getElementById('bottomNav').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginPass').value='';
+  const token=localStorage.getItem(TOKEN_KEY);
+  if(token)await postPublic({acao:'logout'},token).catch(()=>{});
+  localStorage.removeItem(TOKEN_KEY);localStorage.removeItem('central_usuario');
+  pararTimerLeitura();
+  document.getElementById('appLayout').style.display='none';
+  document.getElementById('bottomNav').style.display='none';
+  mostrarPainel('login');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginPass').value='';
 }
-function mostrarApp(usuario){
+function mostrarApp(usuario,nome){
+  const displayNome=nome||usuario;
   localStorage.setItem('central_usuario',usuario);
-  document.getElementById('loginScreen').style.display='none';document.getElementById('appLayout').style.display='flex';document.getElementById('bottomNav').style.display='flex';
-  document.getElementById('sidebarUser').textContent='👤 '+usuario;
-  const cu=document.getElementById('configUsuario');if(cu)cu.textContent=usuario;
+  localStorage.setItem('central_nome',displayNome);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appLayout').style.display='flex';
+  document.getElementById('bottomNav').style.display='flex';
+  const su=document.getElementById('sidebarUser');
+  if(su){const ini=displayNome.charAt(0).toUpperCase();su.innerHTML=`<span style="width:26px;height:26px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin-right:6px">${ini}</span>${displayNome.split(' ')[0]}`;}
   setupEventos();iniciarNavegacao();renderizarLivros();
-  renderizarHome(usuario);
+  renderizarHome(displayNome);
+  carregarPerfil();
   if(localStorage.getItem('swipe_hint_seen')){const h=document.getElementById('swipeHint');if(h)h.style.display='none';}
   if(localStorage.getItem('central_notif')==='on')agendarLembrete();
   verificarConquistas(getStreak().days);
+}
+
+// ── Perfil ────────────────────────────────────────────────────────────────
+async function carregarPerfil(){
+  try{
+    const res=await post({acao:'meu_perfil'});
+    const nome=res.nome||res.usuario||'';
+    const usuario=res.usuario||'';
+    const email=res.email||'';
+    const av=document.getElementById('perfilAvatar');if(av)av.textContent=nome.charAt(0).toUpperCase()||'?';
+    const pn=document.getElementById('perfilNome');if(pn)pn.textContent=nome;
+    const pu=document.getElementById('perfilUsuarioLabel');if(pu)pu.textContent='@'+usuario;
+    const pe=document.getElementById('perfilEmail');if(pe)pe.textContent=email||'Sem e-mail cadastrado';
+    const ps=document.getElementById('perfilSince');if(ps&&res.criado_em)ps.textContent='Membro desde '+fmt(res.criado_em?.split('T')[0]);
+    // Pre-fill edit form
+    const en=document.getElementById('editNome');if(en)en.value=nome;
+    const ee=document.getElementById('editEmail');if(ee)ee.value=email;
+    // Update sidebar
+    localStorage.setItem('central_nome',nome);
+    const su=document.getElementById('sidebarUser');
+    if(su){const ini=nome.charAt(0).toUpperCase();su.innerHTML=`<span style="width:26px;height:26px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin-right:6px">${ini}</span>${nome.split(' ')[0]}`;}
+  } catch{}
+}
+async function salvarPerfil(){
+  const nome=document.getElementById('editNome').value.trim();
+  const email=document.getElementById('editEmail').value.trim();
+  const errEl=document.getElementById('editPerfilError');
+  errEl.textContent='';
+  if(!nome){errEl.textContent='Nome não pode estar vazio.';return;}
+  try{
+    const res=await post({acao:'atualizar_perfil',nome,email:email||null});
+    if(res.sucesso){fecharModal('modal-editar-perfil');await carregarPerfil();toast('Perfil atualizado! ✓','ok');}
+    else errEl.textContent=res.erro||'Erro ao salvar.';
+  }catch{errEl.textContent='Erro de conexão.';}
+}
+async function trocarSenhaUsuario(){
+  const atual=document.getElementById('senhaAtual').value;
+  const nova=document.getElementById('senhaNova').value;
+  const nova2=document.getElementById('senhaNova2').value;
+  const errEl=document.getElementById('trocarSenhaError');
+  errEl.textContent='';
+  if(nova.length<6){errEl.textContent='Nova senha precisa ter ao menos 6 caracteres.';return;}
+  if(nova!==nova2){errEl.textContent='As senhas não coincidem.';return;}
+  try{
+    const res=await post({acao:'trocar_senha',senha_atual:atual,senha_nova:nova});
+    if(res.sucesso){
+      fecharModal('modal-trocar-senha');
+      ['senhaAtual','senhaNova','senhaNova2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      toast('Senha alterada com sucesso! 🔒','ok');
+    } else errEl.textContent=res.erro||'Erro ao alterar senha.';
+  }catch{errEl.textContent='Erro de conexão.';}
 }
 
 // ── Navegação ─────────────────────────────────────────────────────────────

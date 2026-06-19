@@ -1,0 +1,11 @@
+{
+  "name": "central-controle",
+  "version": "1.0.0",
+  "description": "Central de Controle - Sua jornada na Palavra",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
