@@ -291,34 +291,41 @@ async function postPublic(payload,token=null){const h={'Content-Type':'applicati
 async function post(payload){const token=localStorage.getItem(TOKEN_KEY);const h={'Content-Type':'application/json'};if(token)h['X-Auth-Token']=token;const res=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(payload)});const data=await res.json();if(data.auth===false){fazerLogout();throw new Error('Não autenticado');}return data;}
 async function carregarBibliaJSON(){if(BIBLIA_DATA)return BIBLIA_DATA;BIBLIA_DATA=await(await fetch('/biblia.json')).json();return BIBLIA_DATA;}
 
-// ── Contexto Histórico via Claude API ────────────────────────────────────
-async function abrirContexto(){
+// ── Contexto Histórico — banco local ─────────────────────────────────────
+function abrirContexto(){
   const panel=document.getElementById('contextoPanel');
   if(!panel)return;
   if(panel.style.display==='block'){fecharContexto();return;}
   panel.style.display='block';
   const body=document.getElementById('contextoBody');
   const chave=`${livroAtual?.slug}-${capAtual}`;
+  // Cache em memória para não reprocessar
   if(contextoCache[chave]){body.innerHTML=contextoCache[chave];return;}
-  body.innerHTML='<div class="contexto-loading">Gerando contexto com IA… ✦</div>';
-  try{
-    const prompt=`Você é um especialista bíblico. Para o livro "${livroAtual?.nome}" capítulo ${capAtual}, forneça um contexto histórico-cultural conciso em português brasileiro. Responda APENAS em JSON com este formato exato:
-{"historico":"2-3 frases sobre o período histórico, impérios, reis ou eventos da época","geografico":"2-3 frases sobre onde se passa, localização geográfica, rotas ou cidades importantes","cultural":"2-3 frases sobre costumes, tradições, profissões ou práticas culturais relevantes","texto":"2-3 frases sobre quem escreveu este livro, para quem e qual o propósito principal"}`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const raw=data.content?.find(b=>b.type==='text')?.text||'{}';
-    let ctx;
-    try{ctx=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch{ctx={};}
-    const icons={historico:'⚔️',geografico:'🗺️',cultural:'🏺',texto:'📜'};
-    const labels={historico:'Contexto histórico',geografico:'Contexto geográfico',cultural:'Contexto cultural',texto:'Sobre o texto'};
-    const html=Object.entries(ctx).map(([k,v])=>`
-      <div class="contexto-section">
-        <div class="contexto-section-title">${icons[k]||'✦'} ${labels[k]||k}</div>
-        <div class="contexto-section-text">${esc(v)}</div>
-      </div>`).join('');
-    body.innerHTML=html||'<div class="bible-error">Não foi possível gerar o contexto.</div>';
+  // Busca no banco local
+  const ctx = typeof buscarContextoLocal==='function'
+    ? buscarContextoLocal(livroAtual?.slug, capAtual)
+    : null;
+  if(!ctx){
+    body.innerHTML=`<div class="contexto-section">
+      <div class="contexto-section-title">📖 ${esc(livroAtual?.nome||'')}</div>
+      <div class="contexto-section-text" style="color:var(--text-2)">Contexto histórico não disponível para este livro ainda. Em breve mais livros serão adicionados.</div>
+    </div>`;
     contextoCache[chave]=body.innerHTML;
-  }catch(e){body.innerHTML='<div class="bible-error">Erro ao gerar contexto. Verifique sua conexão.</div>';}
+    return;
+  }
+  const icons={historico:'⚔️',geografico:'🗺️',cultural:'🏺',texto:'📜'};
+  const labels={historico:'Contexto histórico',geografico:'Contexto geográfico',cultural:'Contexto cultural',texto:'Sobre o texto'};
+  // Badge de capítulo específico
+  const badge = ctx.temCapEspecifico
+    ? `<div style="display:inline-flex;align-items:center;gap:5px;background:var(--warning-dim);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--warning);margin-bottom:14px">✦ Contexto específico do capítulo ${capAtual}</div>`
+    : `<div style="font-size:11px;color:var(--text-3);margin-bottom:14px">Contexto geral do livro de ${esc(livroAtual?.nome||'')}</div>`;
+  const html = badge + ['historico','geografico','cultural','texto'].map(k=>`
+    <div class="contexto-section">
+      <div class="contexto-section-title">${icons[k]} ${labels[k]}</div>
+      <div class="contexto-section-text">${esc(ctx[k]||'')}</div>
+    </div>`).join('');
+  body.innerHTML=html;
+  contextoCache[chave]=html;
 }
 function fecharContexto(){const p=document.getElementById('contextoPanel');if(p)p.style.display='none';}
 
