@@ -62,7 +62,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 /* MAIN */
 .main{flex:1;overflow-y:auto;scroll-behavior:smooth;
   padding-top:max(28px,calc(env(safe-area-inset-top)+12px));
-  padding-left:32px;padding-right:32px;
+  padding-left:48px;padding-right:48px;
   padding-bottom:max(88px,calc(env(safe-area-inset-bottom)+80px))}
 .tab-panel{display:none;animation:fadeIn .2s ease}
 .tab-panel.active{display:block}
@@ -81,8 +81,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .btn--sm{padding:6px 12px;font-size:12px}
 
 /* ══ HOME — Layout C editorial ════════════════════════════════════════════ */
-.home-wrap{max-width:540px} /* respiro no desktop */
-.home-date{font-size:12px;color:var(--text-3);letter-spacing:.3px;text-transform:capitalize;margin-bottom:6px}
+.home-wrap{max-width:600px;margin:0 auto} /* centrado no desktop */
+.home-date{font-size:12px;color:var(--text-3);letter-spacing:.3px;margin-bottom:6px}
 .home-greeting{font-size:28px;font-weight:700;letter-spacing:-.5px;color:var(--text);line-height:1.2;margin-bottom:14px}
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:var(--warning-dim);border:1px solid rgba(245,166,35,.25);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;color:var(--warning);margin-bottom:0}
 .streak-pill.sem-streak{background:var(--surface-2);border-color:var(--border);color:var(--text-2)}
@@ -346,21 +346,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 @media(min-width:769px){
   .bottom-nav{display:none!important}
   .main{padding-top:28px}
+  /* Bíblia e config também centrados */
+  #tab-biblia,#tab-config{max-width:680px;margin:0 auto}
 }
 @media(max-width:768px){
   .sidebar{display:none}
-  .main{padding:max(16px,calc(env(safe-area-inset-top)+10px)) 18px max(80px,calc(env(safe-area-inset-bottom)+72px))}
-  .home-wrap{max-width:none}
-  .home-greeting{font-size:24px}
-  .vod-quote{font-size:16px}
+  /* padding lateral generoso + safe-area no topo correta */
+  .main{
+    padding-top:max(20px,calc(env(safe-area-inset-top)+16px));
+    padding-left:20px;
+    padding-right:20px;
+    padding-bottom:max(88px,calc(env(safe-area-inset-bottom)+80px))
+  }
+  /* Anti-zoom iOS: todos os inputs/select/textarea precisam de 16px */
+  input,select,textarea,
+  .modal-body input,.modal-body select,.modal-body textarea,
+  .bible-quick-search input,.bible-search-row input,
+  #capNotaTexto,#verseCapNotaTexto,
+  #buscaRapidaInput,#bibliaRef,#bibliaPalavra,#bibliaRefQuick{
+    font-size:16px!important
+  }
+  .home-wrap{max-width:none;margin:0}
+  .home-greeting{font-size:22px}
+  .vod-quote{font-size:15px;line-height:1.65}
   .home-actions{grid-template-columns:1fr 1fr}
   .books-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
   .chapters-grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}
   .verse-text{font-size:calc(var(--verse-size) - 1px)}
-  .modal{border-radius:16px}
+  .modal{border-radius:16px;margin:0 4px}
   .toast{right:10px;left:10px}
   .setting-row{flex-direction:column;align-items:flex-start}
   .setting-control{justify-content:flex-start;width:100%}
   .setting-control input[type=range]{max-width:none;flex:1}
   .conquistas-grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}
+  /* Bíblia nav header menor no mobile */
+  .bible-nav-header span{font-size:13px}
+  .btn-contexto,.btn-chap-nav{width:32px;height:32px;font-size:16px}
 }
