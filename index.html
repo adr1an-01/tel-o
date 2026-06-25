@@ -156,10 +156,25 @@
         <div class="home-divider"></div>
 
         <!-- Versículo do dia — elemento principal -->
-        <div class="vod-section">
-          <div class="vod-eyebrow">✦ versículo do dia</div>
+        <div class="vod-section devocional">
+          <div class="vod-eyebrow">✦ palavra do dia · <span id="devTema"></span></div>
           <div class="vod-quote" id="vodText"></div>
           <div class="vod-ref" id="vodRef"></div>
+          <button class="dev-toggle" id="devToggle" onclick="toggleDevocional()">Ler reflexão ▾</button>
+          <div class="dev-body" id="devBody" style="display:none">
+            <div class="dev-block">
+              <div class="dev-block-label">Reflexão</div>
+              <div class="dev-block-text" id="devReflexao"></div>
+            </div>
+            <div class="dev-block">
+              <div class="dev-block-label">Oração</div>
+              <div class="dev-block-text dev-oracao" id="devOracao"></div>
+            </div>
+            <div class="dev-actions">
+              <button class="dev-action" onclick="compartilharDevocional()">🔗 Compartilhar</button>
+              <button class="dev-action" onclick="copiarDevocional()">📋 Copiar</button>
+            </div>
+          </div>
         </div>
 
         <div class="home-divider"></div>
@@ -573,6 +588,7 @@
 </nav>
 
 <script src="contexto.js"></script>
+<script src="devocional.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

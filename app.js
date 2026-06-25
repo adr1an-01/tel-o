@@ -144,26 +144,7 @@ function renderizarConquistas(){
   }).join('');
 }
 
-// ── Versículo do dia ──────────────────────────────────────────────────────
-const VERSICULOS_DIA=[
-  {ref:'João 3:16',texto:'Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.'},
-  {ref:'Filipenses 4:13',texto:'Tudo posso naquele que me fortalece.'},
-  {ref:'Salmos 23:1',texto:'O Senhor é o meu pastor; nada me faltará.'},
-  {ref:'Romanos 8:28',texto:'Sabemos que Deus age em todas as coisas para o bem daqueles que o amam, dos que foram chamados de acordo com o seu propósito.'},
-  {ref:'Jeremias 29:11',texto:'Porque eu bem sei os planos que tenho a vosso respeito, diz o Senhor; planos de paz e não de mal, para vos dar um futuro e uma esperança.'},
-  {ref:'Isaías 40:31',texto:'Mas os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão e não se cansarão; caminharão e não se fatigarão.'},
-  {ref:'Mateus 11:28',texto:'Vinde a mim, todos os que estais cansados e sobrecarregados, e eu vos aliviarei.'},
-  {ref:'Salmos 46:1',texto:'Deus é o nosso refúgio e fortaleza, socorro bem presente nas tribulações.'},
-  {ref:'Provérbios 3:5-6',texto:'Confia no Senhor de todo o teu coração e não te apoies no teu próprio entendimento. Reconhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.'},
-  {ref:'2 Coríntios 5:7',texto:'Porque andamos por fé e não por vista.'},
-  {ref:'Efésios 2:8',texto:'Porque pela graça sois salvos, por meio da fé; e isso não vem de vós; é dom de Deus.'},
-  {ref:'Salmos 119:105',texto:'Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.'},
-  {ref:'Gálatas 5:22-23',texto:'Mas o fruto do Espírito é: amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade, mansidão, domínio próprio.'},
-  {ref:'1 João 4:8',texto:'Aquele que não ama não conheceu a Deus, porque Deus é amor.'},
-  {ref:'Josué 1:9',texto:'Não to ordenei eu? Sê forte e corajoso! Não te apavores nem te atemorizes, porque o Senhor, teu Deus, está contigo em todo caminho que percorreres.'},
-  {ref:'Salmos 37:4',texto:'Deleita-te também no Senhor, e ele te concederá os desejos do teu coração.'},
-  {ref:'Romanos 12:2',texto:'E não vos conformeis com este século, mas transformai-vos pela renovação do vosso entendimento, para que experimenteis qual seja a boa, agradável e perfeita vontade de Deus.'},
-];
+// (Versículo do dia foi substituído pelo módulo devocional.js / Palavra do Dia)
 
 // ── Render Home Layout C ──────────────────────────────────────────────────
 function renderizarHome(usuario){
@@ -188,10 +169,7 @@ function renderizarHome(usuario){
     pill.className=s.days>0?'streak-pill':'streak-pill sem-streak';
   }
   // VOD
-  const vod=VERSICULOS_DIA[d.getDate()%VERSICULOS_DIA.length];
-  const el_vt=document.getElementById('vodText'),el_vr=document.getElementById('vodRef');
-  if(el_vt)el_vt.textContent=`"${vod.texto}"`;
-  if(el_vr)el_vr.textContent=`— ${vod.ref}`;
+  renderizarDevocional();
   // Planta
   const e=getEstagio(s.days);
   const el_em=document.getElementById('plantEmoji');
@@ -216,6 +194,28 @@ function renderizarHome(usuario){
   renderizarConquistas();
   renderizarPlanoHome();
 }
+
+// ── Palavra do Dia ─────────────────────────────────────────────────────────
+function devocionalDeHoje(){
+  const d=new Date(),start=new Date(d.getFullYear(),0,0);
+  const dia=Math.floor((d-start)/86400000);
+  return DEVOCIONAIS[dia%DEVOCIONAIS.length];
+}
+function renderizarDevocional(){
+  const dv=devocionalDeHoje(),set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('devTema',dv.tema);set('vodText',`"${dv.versiculo}"`);set('vodRef',`— ${dv.referencia}`);
+  set('devReflexao',dv.reflexao);set('devOracao',dv.oracao);
+}
+function toggleDevocional(){
+  const b=document.getElementById('devBody'),t=document.getElementById('devToggle'),open=b.style.display==='block';
+  b.style.display=open?'none':'block';t.textContent=open?'Ler reflexão ▾':'Recolher ▴';
+}
+function _textoDevocional(){
+  const dv=devocionalDeHoje();
+  return `📖 Palavra do Dia — ${dv.tema}\n\n"${dv.versiculo}"\n— ${dv.referencia}\n\n${dv.reflexao}\n\n🙏 ${dv.oracao}`;
+}
+async function copiarDevocional(){const t=_textoDevocional();try{await navigator.clipboard.writeText(t);toast('Copiado! 📋','ok');}catch{copiarFallback(t);}}
+async function compartilharDevocional(){const t=_textoDevocional();if(navigator.share){try{await navigator.share({title:'Palavra do Dia',text:t});}catch{}}else{try{await navigator.clipboard.writeText(t);toast('Copiado! 📋','ok');}catch{copiarFallback(t);}}}
 
 // ── Init ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',async()=>{

@@ -569,3 +569,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .modal-body .auth-input-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
 .modal-body .auth-eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%)}
 
+
+/* ── Palavra do Dia (devocional) ─────────────────────────────────────────── */
+.dev-toggle{margin-top:14px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);border-radius:10px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
+.dev-toggle:hover{color:var(--text);border-color:var(--accent)}
+.dev-body{margin-top:16px;animation:devFade .25s ease}
+@keyframes devFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.dev-block{margin-bottom:16px}
+.dev-block-label{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.dev-block-text{font-size:14.5px;line-height:1.75;color:var(--text-2)}
+.dev-oracao{font-style:italic;color:var(--text);padding-left:12px;border-left:2px solid var(--accent)}
+.dev-actions{display:flex;gap:8px;margin-top:6px}
+.dev-action{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);border-radius:10px;padding:9px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
+.dev-action:hover{color:var(--text);border-color:var(--accent)}
